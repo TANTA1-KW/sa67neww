@@ -56,7 +56,7 @@ func SetupDatabase() {
 
        &entity.Rent{},
        
-       &entity.Daterent{},
+
 
 
    )

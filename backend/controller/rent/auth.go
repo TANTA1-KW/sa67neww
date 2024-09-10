@@ -7,12 +7,16 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/gtwndtl/projectsa/config"
     "github.com/gtwndtl/projectsa/entity"
+    "time"
 )
 
 type (
     addRent struct {
-    	Status string `json:"status"`
-    	UserID uint    `json:"user_id"`
+        Status    string `json:"status"`
+        StartRent time.Time `json:"start_rent"`
+        EndRent   time.Time `json:"end_rent"`
+        UserID    uint    `json:"user_id"`
+        CarID     uint    `json:"car_id"`
     }
 )
 
@@ -44,8 +48,11 @@ func AddRent(c *gin.Context) {
 
     // Create a new rent record
     rent := entity.Rent{
-        Status: payload.Status,
-        UserID: &payload.UserID,
+        Status:    payload.Status,
+        StartRent: payload.StartRent,
+        EndRent:   payload.EndRent,
+        UserID:    payload.UserID,
+        CarID:     payload.CarID,
     }
 
     // Save the rent record to the database

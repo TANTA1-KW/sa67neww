@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GetCars } from "../../services/https";
 import { CarInterface } from "../../interfaces/ICar";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const styles = {
   fontFamily: 'Kanit, sans-serif',
@@ -12,20 +12,30 @@ const styles = {
     width: '100%',
     height: '300px',
     borderRadius: '8px',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    overflow: 'hidden',
+    position: 'relative',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     margin: '10px',
     border: 'none',
     cursor: 'pointer',
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    position: 'relative',
-    overflow: 'hidden',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: adds a dark overlay
+  },
+  imageWrapper: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    transition: 'transform 1s ease-in-out',
+    willChange: 'transform', // Helps with smoother transitions
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   },
 };
 
@@ -119,18 +129,35 @@ function CarSearch() {
 
   return (
     <div style={{ fontFamily: styles.fontFamily, padding: '20px' }}>
-      <Title level={1}>Car Search</Title>
+      <Title level={1}>Type Car</Title>
       <Row gutter={16} style={{ marginBottom: '20px' }}>
         {['Eco car', 'Van', 'Motorcycle'].map(type => (
           <Col xs={24} sm={12} md={8} lg={8} xl={8} style={{ textAlign: 'center' }} key={type}>
             <Button
-              style={{
-                ...styles.button,
-                backgroundImage: `url(${imagesByType[type][currentImageIndex[type]] || ''})`
-              }}
+              style={styles.button}
               onClick={() => handleTypeClick(type)}
             >
-              <Text>{type}</Text>
+              <div
+                style={{
+                  ...styles.imageWrapper,
+                  transform: `translateX(-${currentImageIndex[type] * 100}%)`,
+                }}
+              >
+                {imagesByType[type].map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`car-${index}`}
+                    style={{
+                      ...styles.image,
+                      transform: `translateX(${currentImageIndex[type] * 100}%)`,
+                      position: index === currentImageIndex[type] ? 'relative' : 'absolute',
+                      opacity: index === currentImageIndex[type] ? 1 : 0,
+                      transition: 'opacity 1s ease-in-out',
+                    }}
+                  />
+                ))}
+              </div>
             </Button>
           </Col>
         ))}

@@ -12,6 +12,7 @@ const CreateCar = Loadable(lazy(() => import("../pages/vehiclemanage/create")));
 const CarEdit = Loadable(lazy(() => import("../pages/vehiclemanage/edit")));
 const Rent = Loadable(lazy(() => import("../pages/carsearch")));
 const CarDetails = Loadable(lazy(() => import("../pages/carsearch/cartype")));
+const Booking = Loadable(lazy(() => import("../pages/carsearch/booking")));
 
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
   return {
@@ -54,6 +55,10 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
             path: "type/:type",
             element: <CarDetails />, // Update to CarDetails
           },
+          {
+            path: "booking/:carId",
+            element: <Booking />, // Update to CarDetails
+          }
         ],
       },
     ],

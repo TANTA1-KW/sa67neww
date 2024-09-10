@@ -1,374 +1,187 @@
 import { UsersInterface } from "../../interfaces/IUser";
-
 import { SignInInterface } from "../../interfaces/SignIn";
-
 import { SignUpInterface } from "../../interfaces/SignUp";
-
 import { CarInterface } from "../../interfaces/ICar";
-
+import { RentInterface } from "../../interfaces/IRent";
+import { DatecarInterface } from "../../interfaces/IDatecar";
 
 const apiUrl = "http://localhost:8000";
-
 const Authorization = localStorage.getItem("token");
-
 const Bearer = localStorage.getItem("token_type");
 
+async function fetchData(url: string, options: RequestInit) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Fetch error: ", error);
+        throw error; // Rethrow to handle it in calling code if needed
+    }
+}
 
 async function SignIn(data: SignInInterface) {
-
- const requestOptions = {
-
-   method: "POST",
-
-   headers: { "Content-Type": "application/json" },
-
-   body: JSON.stringify(data),
-
- };
-
-
- let res = await fetch(`${apiUrl}/signin`, requestOptions).then((response) =>
-
-   response.json()
-
- );
-
- return res;
-
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    };
+    return fetchData(`${apiUrl}/signin`, requestOptions);
 }
-
 
 async function SignUp(data: SignUpInterface) {
-
- const requestOptions = {
-
-   method: "POST",
-
-   headers: { "Content-Type": "application/json" },
-
-   body: JSON.stringify(data),
-
- };
-
-
- let res = await fetch(`${apiUrl}/signup`, requestOptions).then((response) =>
-
-   response.json()
-
- );
-
- return res;
-
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    };
+    return fetchData(`${apiUrl}/signup`, requestOptions);
 }
 
-
-// async function GetUsers() {
-
-//  const requestOptions = {
-
-//    method: "GET",
-
-//    headers: {
-
-//      "Content-Type": "application/json",
-
-//      Authorization: `${Bearer} ${Authorization}`,
-
-//    },
-
-//  };
-
-
-//  let res = await fetch(`${apiUrl}/users`, requestOptions).then((response) =>
-
-//    response.json()
-
-//  );
-
-//  return res;
-
-// }
-
-
-// async function GetUsersById(id: string) {
-
-//  const requestOptions = {
-
-//    method: "GET",
-
-//    headers: {
-
-//      "Content-Type": "application/json",
-
-//      Authorization: `${Bearer} ${Authorization}`,
-
-//    },
-
-//  };
-
-
-//  let res = await fetch(`${apiUrl}/user/${id}`, requestOptions).then(
-
-//    (response) => response.json()
-
-//  );
-
-//  return res;
-
-// }
-
-
-// async function UpdateUsersById(id: string, data: UsersInterface) {
-
-//  const requestOptions = {
-
-//    method: "PUT",
-
-//    headers: {
-
-//      "Content-Type": "application/json",
-
-//      Authorization: `${Bearer} ${Authorization}`,
-
-//    },
-
-//    body: JSON.stringify(data),
-
-//  };
-
-
-//  let res = await fetch(`${apiUrl}/user/${id}`, requestOptions).then(
-
-//    (response) => response.json()
-
-//  );
-
-//  return res;
-
-// }
-
-
-// async function DeleteUsersById(id: string) {
-
-//  const requestOptions = {
-
-//    method: "DELETE",
-
-//    headers: {
-
-//      "Content-Type": "application/json",
-
-//      Authorization: `${Bearer} ${Authorization}`,
-
-//    },
-
-//  };
-
-
-//  let res = await fetch(`${apiUrl}/user/${id}`, requestOptions).then(
-
-//    (response) => response.json()
-
-//  );
-
-//  return res;
-
-// }
-
-
 async function CreateUser(data: UsersInterface) {
-
- const requestOptions = {
-
-   method: "POST",
-
-   headers: {
-
-     "Content-Type": "application/json",
-
-     Authorization: `${Bearer} ${Authorization}`,
-
-   },
-
-   body: JSON.stringify(data),
-
- };
-
-
- let res = await fetch(`${apiUrl}/signup`, requestOptions).then((response) =>
-
-   response.json()
-
- );
-
-  return res;
-
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+        body: JSON.stringify(data),
+    };
+    return fetchData(`${apiUrl}/signup`, requestOptions);
 }
 
 async function CreateCar(data: CarInterface) {
-
-    const requestOptions = {
-   
-      method: "POST",
-   
-      headers: {
-   
-        "Content-Type": "application/json",
-   
-        Authorization: `${Bearer} ${Authorization}`,
-   
-      },
-   
-      body: JSON.stringify(data),
-   
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+        body: JSON.stringify(data),
     };
-   
-   
-    let res = await fetch(`${apiUrl}/addcar`, requestOptions).then((response) =>
-   
-      response.json()
-   
-    );
-   
-     return res;
-   
-   }
+    return fetchData(`${apiUrl}/addcar`, requestOptions);
+}
 
-   async function GetCars() {
-
-    const requestOptions = {
-   
-      method: "GET",
-   
-      headers: {
-   
-        "Content-Type": "application/json",
-   
-        Authorization: `${Bearer} ${Authorization}`,
-   
-      },
-   
+async function GetCars() {
+    const requestOptions: RequestInit = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
     };
-   
-   
-    let res = await fetch(`${apiUrl}/cars`, requestOptions).then((response) =>
-   
-      response.json()
-   
-    );
-   
-    return res;
-   
-   }
+    return fetchData(`${apiUrl}/cars`, requestOptions);
+}
 
-   async function GetCarById(id: string) {
-
-    const requestOptions = {
-   
-      method: "GET",
-   
-      headers: {
-   
-        "Content-Type": "application/json",
-   
-        Authorization: `${Bearer} ${Authorization}`,
-   
-      },
-   
+async function GetCarById(id: string) {
+    const requestOptions: RequestInit = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
     };
-   
-   
-    let res = await fetch(`${apiUrl}/cars/${id}`, requestOptions).then(
-   
-      (response) => response.json()
-   
-    );
-   
-    return res;
-   
-   }
+    return fetchData(`${apiUrl}/cars/${id}`, requestOptions);
+}
 
-   async function UpdateCarById(id: string, data: CarInterface) {
-
-    const requestOptions = {
-   
-      method: "PUT",
-   
-      headers: {
-   
-        "Content-Type": "application/json",
-   
-        Authorization: `${Bearer} ${Authorization}`,
-   
-      },
-   
-      body: JSON.stringify(data),
-   
+async function UpdateCarById(id: string, data: CarInterface) {
+    const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+        body: JSON.stringify(data),
     };
-   
-   
-    let res = await fetch(`${apiUrl}/cars/${id}`, requestOptions).then(
-   
-      (response) => response.json()
-   
-    );
-   
-    return res;
-   
-   }
-   
-   async function DeleteCarById(id: string) {
+    return fetchData(`${apiUrl}/cars/${id}`, requestOptions);
+}
 
-    const requestOptions = {
-   
-      method: "DELETE",
-   
-      headers: {
-   
-        "Content-Type": "application/json",
-   
-        Authorization: `${Bearer} ${Authorization}`,
-   
-      },
-   
+async function DeleteCarById(id: string) {
+    const requestOptions: RequestInit = {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
     };
-   
-   
-    let res = await fetch(`${apiUrl}/cars/${id}`, requestOptions).then(
-   
-      (response) => response.json()
-   
-    );
-   
-    return res;
-   
-   }
+    return fetchData(`${apiUrl}/cars/${id}`, requestOptions);
+}
+
+async function GetRents() {
+    const requestOptions: RequestInit = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+    };
+    return fetchData(`${apiUrl}/rent`, requestOptions);
+}
+
+async function GetRentById(id: number) {
+    const requestOptions: RequestInit = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+    };
+    return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
+}
+
+async function CreateRent(data: RentInterface) {
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+        body: JSON.stringify(data),
+    };
+    return fetchData(`${apiUrl}/addrent`, requestOptions);
+}
+
+async function UpdateRentById(id: number, data: RentInterface) {
+    const requestOptions: RequestInit = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+        body: JSON.stringify(data),
+    };
+    return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
+}
+
+async function DeleteRentById(id: number) {
+    const requestOptions: RequestInit = {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Bearer} ${Authorization}`,
+        },
+    };
+    return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
+}
+
 
 
 export {
-
- SignIn,
-
- SignUp,
-
- //GetUsers,
-
- //GetUsersById,
-
- //UpdateUsersById,
-
- //DeleteUsersById,
-
- CreateUser,
-
- CreateCar,
-
- GetCars,
-
- GetCarById,
-
- UpdateCarById,
-
- DeleteCarById,
+    SignIn,
+    SignUp,
+    CreateUser,
+    CreateCar,
+    GetCars,
+    GetCarById,
+    UpdateCarById,
+    DeleteCarById,
+    GetRents,
+    GetRentById,
+    CreateRent,
+    UpdateRentById,
+    DeleteRentById,
 
 };

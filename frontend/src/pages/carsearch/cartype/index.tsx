@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { GetCars } from "../../../services/https";
 import { CarInterface } from "../../../interfaces/ICar";
 import { Card, Row, Col, Typography, message, Select } from "antd";
@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const provinces = [
-  "Bangkok", "Chiang Mai", "Phuket", "Khon Kaen", "Chon Buri", "Nakhon Ratchasima",
+  "ภูเก็ท", "นครสวรรค์", "นครราชสีมา",
   // เพิ่มชื่อจังหวัดอื่น ๆ ตามต้องการ
 ];
 
@@ -17,6 +17,7 @@ const CarType = () => {
   const [cars, setCars] = useState<CarInterface[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | undefined>(undefined);
   const [messageApi, contextHolder] = message.useMessage();
+  const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
 
   const getCarsByType = async () => {
     try {
@@ -31,7 +32,7 @@ const CarType = () => {
         setCars(filteredCars);
 
         if (filteredCars.length === 0) {
-          messageApi.info(`No available cars found for type: ${type} in province: ${selectedProvince || "all provinces"}`); // แสดงข้อความเมื่อไม่พบข้อมูล
+          messageApi.info(`ตอนนี้ไม่มีรถว่าง`); // แสดงข้อความเมื่อไม่พบข้อมูล
         }
       } else {
         setCars([]);
@@ -50,6 +51,11 @@ const CarType = () => {
 
   const handleProvinceChange = (value: string) => {
     setSelectedProvince(value); // เก็บค่าจังหวัดที่เลือก
+  };
+
+  const handleCardClick = (car: CarInterface) => {
+    // นำทางไปยังหน้าเลือกเวลาเพื่อทำการจองรถ
+    navigate(`/rent/booking/${car.ID}`);
   };
 
   return (
@@ -76,14 +82,15 @@ const CarType = () => {
           <Col xs={24} sm={12} md={8} lg={6} key={car.ID}>
             <Card
               cover={<img src={car.picture} alt={car.license_plate} />}
+              onClick={() => handleCardClick(car)} // เมื่อคลิกที่การ์ด
+              style={{ cursor: 'pointer' }} // เปลี่ยนเคอร์เซอร์เมื่อ hover บนการ์ด
             >
               <Card.Meta
                 title={<Text>{car.license_plate}</Text>} // แสดงเลขทะเบียนรถ
                 description={
                   <>
-                    <Text>Brand: {car.brand}</Text><br /> {/* แก้จาก Brands เป็น brand */}
-                    <Text>Model Year: {car.modelYear}</Text><br /> {/* แก้จาก model_year เป็น modelYear */}
-                    <Text>Status: {car.status}</Text><br />
+                    <Text>Brand: {car.brands}</Text><br /> {/* แก้จาก Brands เป็น brand */}
+                    <Text>Model Year: {car.model_year}</Text><br /> {/* แก้จาก model_year เป็น modelYear */}
                     <Text>Province: {car.province}</Text> {/* แสดงจังหวัด */}
                   </>
                 }

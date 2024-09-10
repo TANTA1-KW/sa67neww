@@ -7,6 +7,7 @@ import logo from "../../assets/logo.png";
 import Dashboard from "../../pages/home";
 import Rent from "../../pages/carsearch";
 import Type from "../../pages/carsearch/cartype";
+import Booking from "../../pages/carsearch/booking";
 import VehicleManage from "../../pages/vehiclemanage";
 import CarCreate from "../../pages/vehiclemanage/create";
 import CarEdit from "../../pages/vehiclemanage/edit";
@@ -232,6 +233,7 @@ const FullLayout: React.FC = () => {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/rent" element={<Rent />} />
                 <Route path="/rent/type/:type" element={<Type />} />
+                <Route path="/rent/booking/:carId" element={<Booking />} />
                 <Route path="/vehiclemanage" element={<VehicleManage />} />
                 <Route path="/vehiclemanage/create" element={<CarCreate />} />
                 <Route path="/vehiclemanage/edit/:id" element={<CarEdit />} />

@@ -8,7 +8,7 @@ import (
 	"github.com/gtwndtl/projectsa/config"
 	"github.com/gtwndtl/projectsa/controller/cars"
     "github.com/gtwndtl/projectsa/controller/rent"
-    "github.com/gtwndtl/projectsa/controller/daterent"
+
 	"github.com/gtwndtl/projectsa/controller/genders"
 	"github.com/gtwndtl/projectsa/controller/users"
 	"github.com/gtwndtl/projectsa/middlewares"
@@ -35,7 +35,7 @@ func main() {
 	r.POST("/signin", users.SignIn)
 	r.POST("/addcar", cars.AddCar)
     r.POST("/addrent", rent.AddRent)
-    r.POST("/adddaterent", daterent.AddDaterent)
+
 
 	router := r.Group("/")
 	{
@@ -70,14 +70,7 @@ func main() {
  
         router.DELETE("/rent/:id", rent.Delete)
  
-        // Car routes
-        router.PUT("/daterent/:id", daterent.Update)
- 
-        router.GET("/daterent", daterent.GetAll)
- 
-        router.GET("/daterent/:id", daterent.Get)
- 
-        router.DELETE("/daterent/:id", daterent.Delete)
+
 
 	}
 	// Gender route
