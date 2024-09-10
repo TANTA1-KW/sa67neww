@@ -1,24 +1,22 @@
 package rent
 
 import (
-    "errors"
     "net/http"
-    "gorm.io/gorm"
+    "time"
+
     "github.com/gin-gonic/gin"
     "github.com/gtwndtl/projectsa/config"
     "github.com/gtwndtl/projectsa/entity"
-    "time"
 )
 
-type (
-    addRent struct {
-        Status    string `json:"status"`
-        StartRent time.Time `json:"start_rent"`
-        EndRent   time.Time `json:"end_rent"`
-        UserID    uint    `json:"user_id"`
-        CarID     uint    `json:"car_id"`
-    }
-)
+// addRent represents the structure of the rent data in the request body
+type addRent struct {
+    Status    string    `json:"status"`
+    StartRent time.Time `json:"start_rent"`
+    EndRent   time.Time `json:"end_rent"`
+    UserID    uint      `json:"user_id"`
+    CarID     uint      `json:"car_id"`
+}
 
 // AddRent handles the addition of a new rent record
 func AddRent(c *gin.Context) {
@@ -30,19 +28,22 @@ func AddRent(c *gin.Context) {
         return
     }
 
-    db := config.DB()
-    var rentCheck entity.Rent
-
-    // Check if the user already has a rent record (assuming a user can only have one rent at a time)
-    result := db.Where("user_id = ?", payload.UserID).First(&rentCheck)
-
-    if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+    // Validate that StartRent is before EndRent
+    if payload.StartRent.After(payload.EndRent) {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "StartRent must be before EndRent"})
         return
     }
 
-    if rentCheck.ID != 0 {
-        c.JSON(http.StatusConflict, gin.H{"status": 409, "error": "User already has a rent record"})
+    db := config.DB()
+
+    // Check if the car is already rented during the requested time period
+    var existingRent entity.Rent
+    result := db.Where("car_id = ? AND ((start_rent <= ? AND end_rent >= ?) OR (start_rent <= ? AND end_rent >= ?))",
+        payload.CarID, payload.EndRent, payload.StartRent, payload.StartRent, payload.EndRent).
+        First(&existingRent)
+
+    if result.Error == nil {
+        c.JSON(http.StatusConflict, gin.H{"status": 409, "error": "Car is already rented during the requested period"})
         return
     }
 
