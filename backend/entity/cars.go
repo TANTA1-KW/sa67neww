@@ -16,6 +16,7 @@ type Cars struct {
     VRN            string `json:"vehicle_registration_number"`
     Status  string  `json:"status"`
     Type string `json:"type"`
+    Price float32 `json:"price"`
     Picture        string `json:"picture" gorm:"type:longtext"`
     
 }

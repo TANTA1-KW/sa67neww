@@ -181,6 +181,15 @@ function CarCreate() {
             </Col>
             <Col xs={24} sm={24} md={12}>
               <Form.Item
+                label={<span style={{ fontSize: '16px', color: '#003366', fontFamily: 'Kanit, sans-serif' }}>ราคา/วัน</span>}
+                name="price"
+                rules={[{ required: true, message: "กรุณากรอกราคา/วัน!" }]}
+              >
+                <Input style={{ fontSize: '16px', borderRadius: '8px', border: '1px solid #003366' }} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={12}>
+              <Form.Item
                 label={<span style={{ fontSize: '16px', color: '#003366', fontFamily: 'Kanit, sans-serif' }}>รูปภาพ</span>}
                 name="picture"
               >

@@ -44,6 +44,7 @@ function CarEdit() {
           vehicle_registration_number: res.vehicle_registration_number,
           picture: res.picture,
           status: res.status, // Add status field
+          price: res.price,
         });
         setImage(res.picture);
       } else {
@@ -67,12 +68,13 @@ function CarEdit() {
   const onFinish = async (values: CarInterface) => {
     let payload = {
       ...values,
+      price: parseFloat(values.price),
       picture: image, // use the base64 image
     };
 
     const res = await UpdateCarById(id, payload);
 
-    if (res.message === "Updated successful") {
+    if (res.status === 200) {
       messageApi.open({
         type: "success",
         content: "บันทึกข้อมูลสำเร็จ",
@@ -231,6 +233,15 @@ function CarEdit() {
                   <Option value="งดใช้งานชั่วคราว">งดใช้งานชั่วคราว</Option>
                   <Option value="อยู่ระหว่างซ่อม">อยู่ระหว่างซ่อม</Option>
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={12}>
+              <Form.Item
+                label={<span style={{ fontSize: '16px', color: '#003366', fontFamily: 'Kanit, sans-serif' }}>ราคา/วัน.</span>}
+                name="price"
+                rules={[{ required: true, message: "กรุณากรอกราคา/วัน!" }]}
+              >
+                <Input style={{ fontSize: '16px', borderRadius: '8px', border: '1px solid #003366' }} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={12}>

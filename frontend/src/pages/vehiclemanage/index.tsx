@@ -30,33 +30,54 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const styles = {
+  container: {
+    width: '80%',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#FFFFFF',
+  },
+  headerActions: {
+    textAlign: 'end',
+  },
+  searchRow: {
+    marginBottom: '20px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
   fontFamily: 'Kanit, sans-serif',
   headerTitle: {
     fontSize: '36px',
+    fontFamily: 'Kanit, sans-serif',
   },
   addButton: {
     fontSize: '16px',
     backgroundColor: '#003366',
     color: '#fff',
     border: 'none',
+    fontFamily: 'Kanit, sans-serif',
   },
   searchInput: {
     fontSize: '16px',
     width: '100%',
     marginBottom: '16px',
+    fontFamily: 'Kanit, sans-serif',
   },
   filterSelect: {
     width: '100%',
     marginBottom: '16px',
+    fontFamily: 'Kanit, sans-serif',
   },
   carLicense: {
     fontSize: '18px',
+    fontFamily: 'Kanit, sans-serif',
   },
   listTitle: {
     fontSize: '16px',
+    fontFamily: 'Kanit, sans-serif',
   },
   listDescription: {
     fontSize: '14px',
+    fontFamily: 'Kanit, sans-serif',
   },
   listItem: {
     backgroundColor: '#fff',
@@ -67,7 +88,9 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    position: 'relative', // For positioning the badge
+    position: 'relative',
+    fontFamily: 'Kanit, sans-serif',
+    border: '3px solid #d9d9d9',
   },
   listItemContent: {
     flex: 1,
@@ -81,16 +104,19 @@ const styles = {
   },
   card: {
     borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Light shadow
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '16px',
-    position: 'relative', // For positioning the badge
-    width: '100%', // Make the card width 100% of its container
-    height: 'auto', // Make the card height adjust automatically
+    position: 'relative',
+    width: '100%',
+    height: 'auto',
+    fontFamily: 'Kanit, sans-serif',
+    border: '3px solid #d9d9d9', // Add border to Card
   },
   cardCover: {
     height: '180px',
     objectFit: 'cover',
     borderRadius: '8px',
+    border: '3px solid #d9d9d9',
   },
   cardMeta: {
     display: 'flex',
@@ -106,13 +132,14 @@ const styles = {
     flex: 1,
     margin: '0 4px',
     borderRadius: '4px',
+    fontSize: '14px',
+    padding: '8px 16px',
+    fontFamily: 'Kanit, sans-serif',
   },
   popconfirm: {
-    '.ant-popover': {
-      top: '50% !important',
-      left: '50% !important',
-      transform: 'translate(-50%, -50%) !important',
-    },
+    top: '50% !important',
+    left: '50% !important',
+    transform: 'translate(-50%, -50%) !important',
   },
   statusBadge: {
     position: 'absolute',
@@ -121,16 +148,24 @@ const styles = {
     width: '16px',
     height: '16px',
     borderRadius: '50%',
-    backgroundColor: '#ccc', // Default color (in repair)
+    backgroundColor: '#ccc',
   },
   statusBadgeReady: {
-    backgroundColor: '#4caf50', // Green for ready
+    backgroundColor: '#4caf50',
   },
   statusBadgeNotAvailable: {
-    backgroundColor: '#f44336', // Red for not available
+    backgroundColor: '#f44336',
   },
   statusBadgeInRepair: {
-    backgroundColor: '#9e9e9e', // Grey for in repair
+    backgroundColor: '#9e9e9e',
+  },
+  listItemImage: {
+    height: '100px',
+    width: '150px',
+    objectFit: 'cover',
+    borderRadius: '8px',
+    border: '3px solid #d9d9d9',
+    marginRight: '16px',
   },
 };
 
@@ -141,14 +176,14 @@ function VehicleManage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
   const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
-  const [viewType, setViewType] = useState('list'); // Default to 'list'
+  const [viewType, setViewType] = useState('list');
   const [messageApi, contextHolder] = message.useMessage();
 
   const getCars = async () => {
     let res = await GetCars();
     if (res.length > 0) {
       setCars(res);
-      setFilteredCars(res); // Set initial filtered cars
+      setFilteredCars(res);
     } else {
       setCars([]);
       setFilteredCars([]);
@@ -175,7 +210,7 @@ function VehicleManage() {
       const res = await DeleteCarById(id);
       if (res) {
         messageApi.success("Car deleted successfully");
-        getCars(); // Refresh the car list after deletion
+        getCars();
       } else {
         messageApi.error("Failed to delete the car");
       }
@@ -187,29 +222,19 @@ function VehicleManage() {
   return (
     <>
       {contextHolder}
-      <div
-        style={{
-          fontFamily: styles.fontFamily,
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <div className="vehicle-manage-container" style={{
-          flex: 1,
-          padding: '0px'
-        }}>
-          <Row className="header-row">
+      <div style={{ fontFamily: styles.fontFamily, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={styles.container}>
+          <Row>
             <Col span={12}>
-              <Title level={1} style={{ ...styles.headerTitle, fontFamily: styles.fontFamily }}>Car Management</Title>
+              <Title level={1} style={styles.headerTitle}>Car Management</Title>
             </Col>
-            <Col span={12} className="header-actions">
+            <Col span={12} style={styles.headerActions}>
               <Space>
                 <Button
                   type="default"
                   icon={viewType === 'list' ? <AppstoreAddOutlined /> : <UnorderedListOutlined />}
                   onClick={() => setViewType(viewType === 'list' ? 'card' : 'list')}
-                  style={{ fontFamily: styles.fontFamily }}
+                  style={styles.addButton}
                 >
                   {viewType === 'list' ? 'Card View' : 'List View'}
                 </Button>
@@ -222,13 +247,13 @@ function VehicleManage() {
             </Col>
           </Row>
           <Divider />
-          <Row className="search-row">
+          <Row style={styles.searchRow}>
             <Col span={8}>
               <Input
-                placeholder="ค้นหา"
+                placeholder="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ ...styles.searchInput, fontFamily: styles.fontFamily }}
+                style={styles.searchInput}
                 suffix={<SearchOutlined />}
               />
             </Col>
@@ -239,10 +264,10 @@ function VehicleManage() {
                 onChange={(value) => setSelectedStatus(value)}
                 style={styles.filterSelect}
               >
-                <Option value={undefined}>สถานะ</Option>
-                <Option value="พร้อมใช้งาน">พร้อมใช้งาน</Option>
-                <Option value="งดใช้งานชั่วคราว">งดใช้งานชั่วคราว</Option>
-                <Option value="อยู่ระหว่างซ่อม">อยู่ระหว่างซ่อม</Option>
+                <Option value={undefined}>Status</Option>
+                <Option value="พร้อมใช้งาน">Ready</Option>
+                <Option value="งดใช้งานชั่วคราว">Not Available</Option>
+                <Option value="อยู่ระหว่างซ่อม">In Repair</Option>
               </Select>
             </Col>
             <Col span={3}>
@@ -252,87 +277,26 @@ function VehicleManage() {
                 onChange={(value) => setSelectedType(value)}
                 style={styles.filterSelect}
               >
-                <Option value={undefined}>ประเภท</Option>
-                <Option value="Eco car">Eco car</Option>
+                <Option value={undefined}>Type</Option>
+                <Option value="Eco car">Eco Car</Option>
                 <Option value="Van">Van</Option>
                 <Option value="Motorcycle">Motorcycle</Option>
               </Select>
             </Col>
           </Row>
-          <div className="list-or-card-container" style={{
-            flex: 1,
-            overflow: 'hidden' // Prevent scrollbar
-          }}>
+          <div style={{ flex: 1, overflow: 'hidden' }}>
             {viewType === 'card' ? (
-              <Row gutter={[16, 16]} style={{ margin: 0 }}>
+              <Row gutter={[16, 16]}>
                 {filteredCars.map((car) => (
                   <Col xs={24} sm={12} md={8} lg={6} key={car.ID}>
-                    <Card
-                      style={{ ...styles.card }}
-                      cover={
-                        <img
-                          src={car.picture}
-                          alt="Car"
-                          style={styles.cardCover}
-                        />
-                      }
-                      actions={[
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          onClick={() => navigate(`/vehiclemanage/edit/${car.ID}`)}
-                          style={{ ...styles.actionButton, backgroundColor: '#003366', color: '#fff' }}
-                        >
-                          Edit
-                        </Button>,
-                        <Popconfirm
-                          title="Are you sure to delete this car?"
-                          onConfirm={() => handleDelete(car.ID)}
-                          okText="Yes"
-                          cancelText="No"
-                          overlayClassName="custom-popconfirm"
-                        >
-                          <Button
-                            type="dashed"
-                            danger
-                            icon={<DeleteOutlined />}
-                            style={{ ...styles.actionButton, backgroundColor: '#FF0000', border: 'none', color: '#ffffff' }}
-                          >
-                            Delete
-                          </Button>
-                        </Popconfirm>
-                      ]}
-                    >
-                      <div
-                        style={{
-                          ...styles.statusBadge,
-                          ...(car.status === 'พร้อมใช้งาน' ? styles.statusBadgeReady : 
-                            car.status === 'งดใช้งานชั่วคราว' ? styles.statusBadgeNotAvailable : 
-                            styles.statusBadgeInRepair),
-                        }}
-                      />
-                      <Card.Meta
-                        avatar={<Avatar src={car.picture} />}
-                        title={<Text style={{ ...styles.carLicense, fontFamily: styles.fontFamily }}>{car.license_plate}</Text>}
-                        description={<Text style={{ fontFamily: styles.fontFamily }}>{`${car.brands} - ${car.model_year}`}</Text>}
-                        style={styles.cardMeta}
-                      />
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            ) : (
-              <List
-                dataSource={filteredCars}
-                renderItem={car => (
-                  <List.Item
-                    style={styles.listItem}
-                    actions={[
+                    <Card style={styles.card} cover={
+                      <img src={car.picture} alt="Car" style={styles.cardCover} />
+                    } actions={[
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
                         onClick={() => navigate(`/vehiclemanage/edit/${car.ID}`)}
-                        style={{ backgroundColor: '#003366', color: '#fff' }}
+                        style={{ ...styles.actionButton, backgroundColor: '#003366', color: '#fff' }}
                       >
                         Edit
                       </Button>,
@@ -347,18 +311,61 @@ function VehicleManage() {
                           type="dashed"
                           danger
                           icon={<DeleteOutlined />}
-                          style={{ backgroundColor: '#FF0000', border: 'none', color: '#ffffff' }}
+                          style={{ ...styles.actionButton, backgroundColor: '#FF0000', border: 'none', color: '#ffffff' }}
                         >
                           Delete
                         </Button>
                       </Popconfirm>
-                    ]}
-                  >
+                    ]}>
+                      <div style={{
+                        ...styles.statusBadge,
+                        ...(car.status === 'พร้อมใช้งาน' ? styles.statusBadgeReady :
+                          car.status === 'งดใช้งานชั่วคราว' ? styles.statusBadgeNotAvailable :
+                          styles.statusBadgeInRepair),
+                      }} />
+                      <Card.Meta
+                        avatar={<Avatar src={car.picture} />}
+                        title={<Text style={styles.carLicense}>{car.license_plate}</Text>}
+                        description={<Text style={{ fontFamily: styles.fontFamily }}>{`${car.brands} - ${car.model_year}`}</Text>}
+                        style={styles.cardMeta}
+                      />
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            ) : (
+              <List
+                dataSource={filteredCars}
+                renderItem={car => (
+                  <List.Item style={styles.listItem} actions={[
+                    <Button
+                      type="primary"
+                      icon={<EditOutlined />}
+                      onClick={() => navigate(`/vehiclemanage/edit/${car.ID}`)}
+                      style={{ ...styles.actionButton, backgroundColor: '#003366', color: '#fff' }}
+                    >
+                      Edit
+                    </Button>,
+                    <Popconfirm
+                      title="Are you sure to delete this car?"
+                      onConfirm={() => handleDelete(car.ID)}
+                      okText="Yes"
+                      cancelText="No"
+                      overlayClassName="custom-popconfirm"
+                    >
+                      <Button
+                        type="dashed"
+                        danger
+                        icon={<DeleteOutlined />}
+                        style={{ ...styles.actionButton, backgroundColor: '#FF0000', border: 'none', color: '#ffffff' }}
+                      >
+                        Delete
+                      </Button>
+                    </Popconfirm>
+                  ]}>
                     <List.Item.Meta
-                      avatar={<img src={car.picture} alt="Car" style={{ height: '100px', objectFit: 'cover', width: '150px', borderRadius: '8px' }} />}
-                      title={
-                        <Text style={{ ...styles.listTitle, fontFamily: styles.fontFamily }}>{car.license_plate}</Text>
-                      }
+                      avatar={<img src={car.picture} alt="Car" style={styles.listItemImage} />}
+                      title={<Text style={styles.listTitle}>{car.license_plate}</Text>}
                       description={
                         <div>
                           <Text style={{ fontFamily: styles.fontFamily }}>จังหวัด: {car.province}</Text><br />
@@ -372,14 +379,12 @@ function VehicleManage() {
                         </div>
                       }
                     />
-                    <div
-                      style={{
-                        ...styles.statusBadge,
-                        ...(car.status === 'พร้อมใช้งาน' ? styles.statusBadgeReady : 
-                          car.status === 'งดใช้งานชั่วคราว' ? styles.statusBadgeNotAvailable : 
-                          styles.statusBadgeInRepair),
-                      }}
-                    />
+                    <div style={{
+                      ...styles.statusBadge,
+                      ...(car.status === 'พร้อมใช้งาน' ? styles.statusBadgeReady :
+                        car.status === 'งดใช้งานชั่วคราว' ? styles.statusBadgeNotAvailable :
+                        styles.statusBadgeInRepair),
+                    }} />
                   </List.Item>
                 )}
               />
@@ -387,15 +392,6 @@ function VehicleManage() {
           </div>
         </div>
       </div>
-      <style>
-        {`
-          .custom-popconfirm .ant-popover {
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-          }
-        `}
-      </style>
     </>
   );
 }

@@ -11,6 +11,7 @@ type Rent struct {
     Status         string      
     StartRent time.Time 
     EndRent   time.Time 
+     Price float32 `json:"price"`
     UserID   uint  `json:"user_id"`
     User     *Users  `gorm:"foreignKey: user_id" json:"user"`
 

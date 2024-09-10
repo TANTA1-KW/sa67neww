@@ -12,6 +12,7 @@ import (
 // addRent represents the structure of the rent data in the request body
 type addRent struct {
     Status    string    `json:"status"`
+    Price     float32   `json:"price"`
     StartRent time.Time `json:"start_rent"`
     EndRent   time.Time `json:"end_rent"`
     UserID    uint      `json:"user_id"`
@@ -43,13 +44,14 @@ func AddRent(c *gin.Context) {
         First(&existingRent)
 
     if result.Error == nil {
-        c.JSON(http.StatusConflict, gin.H{"status": 409, "error": "Car is already rented during the requested period"})
+        c.JSON(http.StatusConflict, gin.H{"status": 409, "error": "วันที่คุณจองได้มีคนจองรถไว้แล้ว"})
         return
     }
 
     // Create a new rent record
     rent := entity.Rent{
         Status:    payload.Status,
+        Price:     payload.Price,
         StartRent: payload.StartRent,
         EndRent:   payload.EndRent,
         UserID:    payload.UserID,
