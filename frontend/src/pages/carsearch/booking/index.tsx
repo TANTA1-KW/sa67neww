@@ -41,7 +41,7 @@ const BookingPage = () => {
             // Calculate the difference in days between start and end date
             const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
             // Calculate the total price
-            const totalPrice = (diffInDays+1) * car.price; // Assuming 'car.price' is the price per day
+            const totalPrice = diffInDays * car.price; // Assuming 'car.price' is the price per day
             return totalPrice;
         }
         return 0;
@@ -65,9 +65,9 @@ const BookingPage = () => {
                     status: 'Pending Payment', // Set status to "Pending Payment"
                 };
                 console.log('Booking Data:', data); // Debugging
-                await CreateRent(data);
+                const response = await CreateRent(data);
                 messageApi.success("Booking successfully created!");
-                navigate("/rent"); // Navigate to car selection page
+                navigate(`/rent/payment/${response.ID}`, { state: { price: price } }); // Pass price in state
             } catch (error) {
                 console.error('Error creating booking:', error); // Debugging
                 const errorMessage = error instanceof Error ? error.message : "Failed to create booking";
