@@ -1,110 +1,96 @@
 package main
 
 import (
-	"net/http"
-	"os"
+    "net/http"
+    "os"
 
-	"github.com/gin-gonic/gin"
-	"github.com/gtwndtl/projectsa/config"
-	"github.com/gtwndtl/projectsa/controller/cars"
+    "github.com/gin-gonic/gin"
+    "github.com/gtwndtl/projectsa/config"
+    "github.com/gtwndtl/projectsa/controller/cars"
     "github.com/gtwndtl/projectsa/controller/rent"
-
-	"github.com/gtwndtl/projectsa/controller/genders"
-	"github.com/gtwndtl/projectsa/controller/users"
-	"github.com/gtwndtl/projectsa/middlewares"
+    "github.com/gtwndtl/projectsa/controller/genders"
+    "github.com/gtwndtl/projectsa/controller/users"
+    "github.com/gtwndtl/projectsa/middlewares"
 )
 
 const defaultPort = "8000"
 
 func main() {
-	port := getPort()
+    port := getPort()
 
-	// Open connection to the database
-	config.ConnectionDB()
+    // Open connection to the database
+    config.ConnectionDB()
 
-	// Setup database
-	config.SetupDatabase()
+    // Setup database
+    config.SetupDatabase()
 
-	r := gin.Default()
+    r := gin.Default()
 
-	// Use CORS middleware
-	r.Use(CORSMiddleware())
+    // Use CORS middleware
+    r.Use(CORSMiddleware())
 
-	// Auth routes
-	r.POST("/signup", users.SignUp)
-	r.POST("/signin", users.SignIn)
-	r.POST("/addcar", cars.AddCar)
+    // Auth routes
+    r.POST("/signup", users.SignUp)
+    r.POST("/signin", users.SignIn)
+    r.POST("/addcar", cars.AddCar)
     r.POST("/addrent", rent.AddRent)
 
+    router := r.Group("/")
+    {
+        router.Use(middlewares.Authorizes())
 
-	router := r.Group("/")
-	{
+        // User Route
+        router.PUT("/user/:id", users.Update)
+        router.GET("/users", users.GetAll)
+        router.GET("/user/:id", users.Get)
+        router.DELETE("/user/:id", users.Delete)
 
-		router.Use(middlewares.Authorizes())
+        // Car routes
+        router.PUT("/cars/:id", cars.Update)
+        router.GET("/cars", cars.GetAll)
+        router.GET("/cars/:id", cars.Get)
+        router.DELETE("/cars/:id", cars.Delete)
 
-		// User Route
-
-		router.PUT("/user/:id", users.Update)
-
-		router.GET("/users", users.GetAll)
-
-		router.GET("/user/:id", users.Get)
-
-		router.DELETE("/user/:id", users.Delete)
-
-		// Car routes
-		router.PUT("/cars/:id", cars.Update)
-
-		router.GET("/cars", cars.GetAll)
-
-		router.GET("/cars/:id", cars.Get)
-
-		router.DELETE("/cars/:id", cars.Delete)
-
-        // rent routes
+        // Rent routes
+        router.PUT("/rent/:id/status", rent.UpdateRentStatus)
         router.PUT("/rent/:id", rent.Update)
- 
         router.GET("/rent", rent.GetAll)
- 
         router.GET("/rent/:id", rent.Get)
- 
         router.DELETE("/rent/:id", rent.Delete)
- 
+    }
 
+    // Gender route
+    r.GET("/genders", genders.GetAll)
 
-	}
-	// Gender route
-	r.GET("/genders", genders.GetAll)
+    // Root route
+    r.GET("/", func(c *gin.Context) {
+        c.String(http.StatusOK, "API RUNNING... PORT: %s", port)
+    })
 
-	// Root route
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "API RUNNING... PORT: %s", port)
-	})
-
-	// Run the server
-	r.Run(":" + port)
+    // Run the server
+    r.Run(":" + port)
 }
 
 func getPort() string {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
-	return port
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = defaultPort
+    }
+    return port
 }
 
 func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+    return func(c *gin.Context) {
+        c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+        c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+        c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+        c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
+        if c.Request.Method == "OPTIONS" {
+            c.AbortWithStatus(204)
+            return
+        }
 
-		c.Next()
-	}
+        c.Next()
+    }
 }

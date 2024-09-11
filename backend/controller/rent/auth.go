@@ -64,5 +64,25 @@ func AddRent(c *gin.Context) {
         return
     }
 
-    c.JSON(http.StatusCreated, gin.H{"status": 201, "message": "Rent added successfully"})
+    // Return the rent ID in the response
+    c.JSON(http.StatusCreated, gin.H{
+        "status":  201,
+        "message": "Rent added successfully",
+        "rent_id": rent.ID, // ส่ง ID ของ rent กลับไปยัง client
+    })
+}
+
+// DeleteRent handles the deletion of a rent record
+func DeleteRent(c *gin.Context) {
+    id := c.Param("id")
+
+    db := config.DB()
+
+    // Delete the rent record from the database
+    if err := db.Delete(&entity.Rent{}, id).Error; err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"status": 200, "message": "Deleted successfully"})
 }

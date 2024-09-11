@@ -15,6 +15,7 @@ const BookingPage = () => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [userID, setUserID] = useState<number | null>(null); // State for userID
+    const [rentID, setRentID] = useState<number | null>(null); // State for rentID
     const [messageApi, contextHolder] = message.useMessage();
 
     // Fetch car details
@@ -54,22 +55,29 @@ const BookingPage = () => {
                 messageApi.error("Please ensure that the end date is after the start date");
                 return;
             }
-
+    
             try {
                 const data: RentInterface = {
                     start_rent: startDate.toISOString(),
                     end_rent: endDate.toISOString(),
-                    price: price, // Use the calculated price
-                    car_id: car.ID, // Use the car's ID from the fetched data
-                    user_id: userID, // Use the userID from the state
-                    status: 'Pending Payment', // Set status to "Pending Payment"
+                    price: price,
+                    car_id: car.ID,
+                    user_id: userID,
+                    status: 'Pending Payment',
                 };
-                console.log('Booking Data:', data); // Debugging
+    
                 const response = await CreateRent(data);
-                messageApi.success("Booking successfully created!");
-                navigate(`/rent/payment/${response.ID}`, { state: { price: price } }); // Pass price in state
+    
+                // ตรวจสอบข้อมูลที่ตอบกลับ
+                if (response && response.rent_id) { // ตรวจสอบว่ามี rent_id ในการตอบกลับ
+                    messageApi.success("Booking successfully created!");
+                    // นำค่า rent_id ที่ได้มาใช้ในการทำงานต่อ
+                    navigate(`/rent/payment/${response.rent_id}`, { state: { price: price, car: car } });
+                } else {
+                    messageApi.error("Failed to create booking. Response does not contain rent_id.");
+                }
             } catch (error) {
-                console.error('Error creating booking:', error); // Debugging
+                console.error('Error creating booking:', error);
                 const errorMessage = error instanceof Error ? error.message : "Failed to create booking";
                 messageApi.error(`Failed to create booking: ${errorMessage}`);
             }
@@ -77,7 +85,7 @@ const BookingPage = () => {
             messageApi.error("Please select start and end dates, and ensure all data is available");
         }
     };
-
+    
     const handleCancel = () => {
         navigate("/rent"); // Navigate to car selection page
     };
@@ -93,7 +101,6 @@ const BookingPage = () => {
                     <Text>Province: {car.province}</Text><br />
                     <Text>Status: {car.status}</Text><br />
                     <Text>Car ID: {car.ID}</Text><br />
-                    <Text>Price per day: {car.price} THB</Text><br /> {/* Display car price */}
                     <img src={car.picture} alt={car.license_plate} style={{ width: '100%', height: 'auto', marginBottom: '20px' }} />
 
                     <div style={{ marginBottom: '20px' }}>

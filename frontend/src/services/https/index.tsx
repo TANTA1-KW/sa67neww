@@ -3,7 +3,8 @@ import { SignInInterface } from "../../interfaces/SignIn";
 import { SignUpInterface } from "../../interfaces/SignUp";
 import { CarInterface } from "../../interfaces/ICar";
 import { RentInterface } from "../../interfaces/IRent";
-import { DatecarInterface } from "../../interfaces/IDatecar";
+import axios from "axios";
+
 
 const apiUrl = "http://localhost:8000";
 const Authorization = localStorage.getItem("token");
@@ -132,40 +133,48 @@ async function GetRentById(id: number) {
     return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
 }
 
-async function CreateRent(data: RentInterface) {
+async function CreateRent (data: RentInterface)  {
     const requestOptions: RequestInit = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `${Bearer} ${Authorization}`,
+            Authorization: `Bearer ${Authorization}`,
         },
         body: JSON.stringify(data),
     };
-    return fetchData(`${apiUrl}/addrent`, requestOptions);
+
+    const response = await fetch(`${apiUrl}/addrent`, requestOptions);
+    return response.json();  // Ensure this correctly parses JSON response
+};
+
+// service.ts
+async function UpdateRentById(id: number, data: { status: string }) {
+  const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Authorization}`,
+      },
+      body: JSON.stringify(data),
+  };
+  return fetchData(`${apiUrl}/rent/${id}/status`, requestOptions);
 }
 
-async function UpdateRentById(id: number, data: RentInterface) {
-    const requestOptions: RequestInit = {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `${Bearer} ${Authorization}`,
-        },
-        body: JSON.stringify(data),
-    };
-    return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
-}
+// service.ts
+
+// service.ts
 
 async function DeleteRentById(id: number) {
-    const requestOptions: RequestInit = {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `${Bearer} ${Authorization}`,
-        },
-    };
-    return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
+  const requestOptions: RequestInit = {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Authorization}`,
+      },
+  };
+  return fetchData(`${apiUrl}/rent/${id}`, requestOptions);
 }
+
 
 
 
