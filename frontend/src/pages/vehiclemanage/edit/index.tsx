@@ -43,7 +43,7 @@ function CarEdit() {
           vehicle_identification_number: res.vehicle_identification_number,
           vehicle_registration_number: res.vehicle_registration_number,
           picture: res.picture,
-          status: res.status, // Add status field
+          status: res.status,
           price: res.price,
         });
         setImage(res.picture);
@@ -107,47 +107,52 @@ function CarEdit() {
   };
 
   return (
-    <div style={{ fontFamily: 'Kanit, sans-serif', padding: '20px' }}>
+    <div
+      style={{
+        fontFamily: "Kanit, sans-serif",
+        padding: "20px",
+        width: "80%",
+        margin: "0 auto", // Center the component
+      }}
+    >
       {contextHolder}
       <Card>
-        <Title level={2} style={{ fontSize: '24px', color: '#003366', fontFamily: 'Kanit, sans-serif' }}>แก้ไขข้อมูลรถ</Title>
+        <Title level={2} style={{ fontSize: "24px", color: "#003366", fontFamily: "Kanit, sans-serif" }}>
+          แก้ไขข้อมูลรถ
+        </Title>
         <Divider />
         <Row justify="center">
           <Col>
             {image && (
-              <div style={{
-                width: '300px',
-                height: '200px',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                border: '1px solid #003366',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              <div
+                style={{
+                  width: "300px",
+                  height: "200px",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  border: "1px solid #003366",
+                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <img
                   src={image}
                   alt="Car"
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
                   }}
                 />
               </div>
             )}
           </Col>
         </Row>
-        <Form
-          name="basic"
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          autoComplete="off"
-        >
+        <Form name="basic" form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
           <Row gutter={[16, 16]}>
-            <Col xs={24} sm={24} md={12}>
+          <Col xs={24} sm={24} md={12}>
               <Form.Item
                 label={<span style={{ fontSize: '16px', color: '#003366', fontFamily: 'Kanit, sans-serif' }}>ทะเบียนรถ</span>}
                 name="license_plate"
@@ -283,11 +288,11 @@ function CarEdit() {
                       htmlType="button"
                       style={{
                         marginRight: "10px",
-                        fontSize: '16px',
-                        backgroundColor: '#FFD700',
-                        borderColor: '#FFD700',
-                        color: '#003366',
-                        borderRadius: '8px'
+                        fontSize: "16px",
+                        backgroundColor: "#FFD700",
+                        borderColor: "#FFD700",
+                        color: "#003366",
+                        borderRadius: "8px",
                       }}
                     >
                       Cancel
@@ -298,10 +303,10 @@ function CarEdit() {
                     htmlType="submit"
                     icon={<PlusOutlined />}
                     style={{
-                      fontSize: '16px',
-                      borderRadius: '8px',
-                      backgroundColor: '#003366',
-                      borderColor: '#003366'
+                      fontSize: "16px",
+                      borderRadius: "8px",
+                      backgroundColor: "#003366",
+                      borderColor: "#003366",
                     }}
                   >
                     Save

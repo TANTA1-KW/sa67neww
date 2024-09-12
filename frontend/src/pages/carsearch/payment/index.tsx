@@ -40,7 +40,7 @@ const PaymentPage = () => {
     return (
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <div style={{ maxWidth: '600px', width: '100%', textAlign: 'center' }}>
-                <Title level={3} style={{ textAlign: 'center' }}>Payment for Booking {bookingId}</Title>
+                <Title level={3} style={{ textAlign: 'center' }}>Payment for Booking</Title>
                 <Text>Total Amount: {price ? `${price} THB` : "Price not available"}</Text><br />
                 <div style={{ textAlign: 'center', margin: '20px 0' }}>
                     <img src={qrCodeUrl} alt="PromptPay QR Code" style={{ maxWidth: '100%', height: 'auto' }} />

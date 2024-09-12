@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import "../../App.css";
+import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { UserOutlined, DashboardOutlined, DownOutlined } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, Button, message, Dropdown } from "antd";
 import logo from "../../assets/logo.png";
-import Dashboard from "../../pages/home";
+import Home from "../../pages/home";
 import Rent from "../../pages/carsearch";
 import Type from "../../pages/carsearch/cartype";
 import Booking from "../../pages/carsearch/booking";
@@ -12,12 +11,13 @@ import Payment from "../../pages/carsearch/payment";
 import VehicleManage from "../../pages/vehiclemanage";
 import CarCreate from "../../pages/vehiclemanage/create";
 import CarEdit from "../../pages/vehiclemanage/edit";
-import ProfilePage from "../../pages/profile"; // Import your ProfilePage component
+import ProfilePage from "../../pages/profile";
 
 const { Header, Content, Footer } = Layout;
 
 const FullLayout: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Added to get current route
   const page = localStorage.getItem("page");
   const [messageApi, contextHolder] = message.useMessage();
   const [collapsed, setCollapsed] = useState(false);
@@ -113,9 +113,10 @@ const FullLayout: React.FC = () => {
               <Menu
                 theme="dark"
                 mode="horizontal"
-                defaultSelectedKeys={[page ? page : "dashboard"]}
+                defaultSelectedKeys={[page ? page : "home"]}
+                selectedKeys={[location.pathname]} // Set selected key based on current path
                 style={{ 
-                  background: "#003366", 
+                  background: "transparent", 
                   border: 'none', 
                   marginRight: '16px',
                   lineHeight: '64px',
@@ -123,72 +124,48 @@ const FullLayout: React.FC = () => {
                 }}
               >
                 <Menu.Item
-                  key="dashboard"
-                  onClick={() => setCurrentPage("dashboard")}
+                  key="/"
+                  onClick={() => setCurrentPage("home")}
                   style={{ 
                     borderRadius: '4px', 
                     transition: 'background 0.3s', 
-                    background: page === "dashboard" ? "#1a2a40" : "transparent",
+                    background: location.pathname === "/" ? "#1a2a40" : "transparent",
                     marginRight: '16px', 
-                    color: '#FFD700'
+                    color: '#FFD700',
                   }}
+                  className="menu-item"
                 >
                   <Link to="/" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <DashboardOutlined style={{ marginRight: '8px' }} />
                     <span>Home</span>
                   </Link>
                 </Menu.Item>
-              </Menu>
-              <Menu
-                theme="dark"
-                mode="horizontal"
-                defaultSelectedKeys={[page ? page : "rent"]}
-                style={{ 
-                  background: "#003366", 
-                  border: 'none', 
-                  marginRight: '16px',
-                  lineHeight: '64px',
-                  fontFamily: 'Kanit, sans-serif'
-                }}
-              >
                 <Menu.Item
-                  key="rent"
+                  key="/rent"
                   onClick={() => setCurrentPage("rent")}
                   style={{ 
                     borderRadius: '4px', 
                     transition: 'background 0.3s', 
-                    background: page === "rent" ? "#1a2a40" : "transparent",
-                    marginRight: '16px',
+                    background: location.pathname === "/rent" ? "#1a2a40" : "transparent",
                     color: '#FFD700'
                   }}
+                  className="menu-item"
                 >
                   <Link to="/rent" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <UserOutlined style={{ marginRight: '8px' }} />
                     <span>Rent</span>
                   </Link>
                 </Menu.Item>
-              </Menu>
-              <Menu
-                theme="dark"
-                mode="horizontal"
-                defaultSelectedKeys={[page ? page : "vehiclemanage"]}
-                style={{ 
-                  background: "#003366", 
-                  border: 'none', 
-                  marginRight: '16px',
-                  lineHeight: '64px',
-                  fontFamily: 'Kanit, sans-serif'
-                }}
-              >
                 <Menu.Item
-                  key="vehiclemanage"
+                  key="/vehiclemanage"
                   onClick={() => setCurrentPage("vehiclemanage")}
                   style={{ 
                     borderRadius: '4px', 
                     transition: 'background 0.3s', 
-                    background: page === "vehiclemanage" ? "#1a2a40" : "transparent",
+                    background: location.pathname === "/vehiclemanage" ? "#1a2a40" : "transparent",
                     color: '#FFD700'
                   }}
+                  className="menu-item"
                 >
                   <Link to="/vehiclemanage" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <UserOutlined style={{ marginRight: '8px' }} />
@@ -231,7 +208,7 @@ const FullLayout: React.FC = () => {
               }}
             >
               <Routes>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/rent" element={<Rent />} />
                 <Route path="/rent/type/:type" element={<Type />} />
                 <Route path="/rent/booking/:carId" element={<Booking />} />
@@ -239,7 +216,7 @@ const FullLayout: React.FC = () => {
                 <Route path="/vehiclemanage" element={<VehicleManage />} />
                 <Route path="/vehiclemanage/create" element={<CarCreate />} />
                 <Route path="/vehiclemanage/edit/:id" element={<CarEdit />} />
-                <Route path="/profile" element={<ProfilePage />} /> {/* Add route for profile page */}
+                <Route path="/profile" element={<ProfilePage />} />
               </Routes>
             </div>
           </Content>

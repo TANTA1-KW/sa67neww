@@ -1,4 +1,11 @@
 export interface CarInterface {
+  price: number;
+  license_plate: ReactNode;
+  brands: ReactNode;
+  model_year: ReactNode;
+  province: ReactNode;
+  status: ReactNode;
+  picture: string | undefined;
   ID?: number;
   LicensePlate?: string;
   Province?: string;

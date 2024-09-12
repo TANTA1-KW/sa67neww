@@ -70,14 +70,16 @@ func Update(c *gin.Context) {
 }
 
 func Delete(c *gin.Context) {
-    id := c.Param("id")
+    CarID := c.Param("id")
 
     db := config.DB()
-    if tx := db.Exec("DELETE FROM cars WHERE id = ?", id); tx.RowsAffected == 0 {
-        c.JSON(http.StatusBadRequest, gin.H{"status": 400, "error": "id not found"})
+    // Perform the delete operation directly without using soft delete
+    if err := db.Delete(&entity.Cars{}, CarID).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"status": 400, "error": "id not found"})
         return
     }
 
     c.JSON(http.StatusOK, gin.H{"status": 200, "message": "Deleted successful"})
-
 }
+
+

@@ -15,7 +15,6 @@ const BookingPage = () => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [userID, setUserID] = useState<number | null>(null); // State for userID
-    const [rentID, setRentID] = useState<number | null>(null); // State for rentID
     const [messageApi, contextHolder] = message.useMessage();
 
     // Fetch car details
@@ -42,7 +41,7 @@ const BookingPage = () => {
             // Calculate the difference in days between start and end date
             const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
             // Calculate the total price
-            const totalPrice = diffInDays * car.price; // Assuming 'car.price' is the price per day
+            const totalPrice = (diffInDays + 1) * car.price; // Include the end date as a full day
             return totalPrice;
         }
         return 0;
@@ -51,11 +50,33 @@ const BookingPage = () => {
     const handleBooking = async () => {
         if (startDate && endDate && car && userID) {
             const price = calculatePrice();
-            if (price <= 0) {
-                messageApi.error("Please ensure that the end date is after the start date");
+            const currentDate = dayjs().startOf('day'); // Current date (starting at 00:00)
+
+            // Validate that startDate and endDate are not in the past
+            if (dayjs(startDate).isBefore(currentDate) || dayjs(endDate).isBefore(currentDate)) {
+                messageApi.error("Cannot book for past dates");
                 return;
             }
-    
+
+            // Validate that endDate is after startDate
+            if (dayjs(startDate).isAfter(dayjs(endDate))) {
+                messageApi.error("End date must be after the start date");
+                return;
+            }
+
+            // Validate that booking must be for at least 1 day
+            const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
+            if (diffInDays < 0) { // diffInDays < 0 means the dates are the same
+                messageApi.error("Booking must be for at least 1 day");
+                return;
+            }
+
+            // Validate that price is greater than 0
+            if (price <= 0) {
+                messageApi.error("Invalid price calculated");
+                return;
+            }
+
             try {
                 const data: RentInterface = {
                     start_rent: startDate.toISOString(),
@@ -65,13 +86,13 @@ const BookingPage = () => {
                     user_id: userID,
                     status: 'Pending Payment',
                 };
-    
+
                 const response = await CreateRent(data);
-    
-                // ตรวจสอบข้อมูลที่ตอบกลับ
-                if (response && response.rent_id) { // ตรวจสอบว่ามี rent_id ในการตอบกลับ
+
+                // Check the response for rent_id
+                if (response && response.rent_id) { // Check if rent_id is in the response
                     messageApi.success("Booking successfully created!");
-                    // นำค่า rent_id ที่ได้มาใช้ในการทำงานต่อ
+                    // Use the returned rent_id to navigate to the payment page
                     navigate(`/rent/payment/${response.rent_id}`, { state: { price: price, car: car } });
                 } else {
                     messageApi.error("Failed to create booking. Response does not contain rent_id.");
@@ -85,7 +106,7 @@ const BookingPage = () => {
             messageApi.error("Please select start and end dates, and ensure all data is available");
         }
     };
-    
+
     const handleCancel = () => {
         navigate("/rent"); // Navigate to car selection page
     };
