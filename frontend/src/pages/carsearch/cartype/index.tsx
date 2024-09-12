@@ -4,11 +4,12 @@ import { GetCars } from "../../../services/https";
 import { CarInterface } from "../../../interfaces/ICar";
 import { Card, Row, Col, Typography, message, Select } from "antd";
 
+
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const provinces = [
-  "ภูเก็ท", "นครสวรรค์", "นครราชสีมา",
+  "ภูเก็ต", "นครสวรรค์", "นครราชสีมา",
   // เพิ่มชื่อจังหวัดอื่น ๆ ตามต้องการ
 ];
 
@@ -77,22 +78,22 @@ const CarType = () => {
         ))}
       </Select>
 
-      <Row gutter={16}>
+      <Row gutter={16} className="car-cards-container">
         {cars.map(car => (
           <Col xs={24} sm={12} md={8} lg={6} key={car.ID}>
             <Card
-              cover={<img src={car.picture} alt={car.license_plate} />}
+              cover={<img src={car.picture} alt={car.license_plate} className="car-image" />}
               onClick={() => handleCardClick(car)} // เมื่อคลิกที่การ์ด
-              style={{ cursor: 'pointer' }} // เปลี่ยนเคอร์เซอร์เมื่อ hover บนการ์ด
+              style={{ cursor: 'pointer', height: '100%' }} // เปลี่ยนเคอร์เซอร์เมื่อ hover บนการ์ด
             >
               <Card.Meta
                 title={<Text>{car.license_plate}</Text>} // แสดงเลขทะเบียนรถ
                 description={
-                  <>
-                    <Text>Brand: {car.brands}</Text><br /> {/* แก้จาก Brands เป็น brand */}
-                    <Text>Model Year: {car.model_year}</Text><br /> {/* แก้จาก model_year เป็น modelYear */}
+                  <div className="card-description">
+                    <Text>Brand: {car.brands}</Text><br />
+                    <Text>Model Year: {car.model_year}</Text><br />
                     <Text>Province: {car.province}</Text> {/* แสดงจังหวัด */}
-                  </>
+                  </div>
                 }
               />
             </Card>
