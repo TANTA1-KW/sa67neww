@@ -4,7 +4,6 @@ import { GetCars } from "../../../services/https";
 import { CarInterface } from "../../../interfaces/ICar";
 import { Card, Row, Col, Typography, message, Select } from "antd";
 
-
 const { Title, Text } = Typography;
 const { Option } = Select;
 
@@ -16,6 +15,7 @@ const provinces = [
 const CarType = () => {
   const { type } = useParams<{ type: string }>(); // รับค่า type จาก URL
   const [cars, setCars] = useState<CarInterface[]>([]);
+  const [filteredCars, setFilteredCars] = useState<CarInterface[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | undefined>(undefined);
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate(); // ใช้ useNavigate สำหรับการนำทาง
@@ -24,19 +24,20 @@ const CarType = () => {
     try {
       const res = await GetCars(); // เรียก API เพื่อดึงข้อมูลรถยนต์
       if (res.length > 0) {
-        // กรองข้อมูลตาม type ที่ส่งผ่าน URL, จังหวัดที่เลือก, และสถานะที่พร้อมใช้งาน
-        const filteredCars = res.filter(car => 
+        // กรองข้อมูลตาม type ที่ส่งผ่าน URL และสถานะที่พร้อมใช้งาน
+        const allCars = res.filter(car => 
           car.type === type &&
-          (!selectedProvince || car.province === selectedProvince) &&
           car.status === 'พร้อมใช้งาน' // กรองเฉพาะรถที่พร้อมใช้งาน
         );
-        setCars(filteredCars);
+        setCars(allCars);
+        setFilteredCars(allCars);
 
-        if (filteredCars.length === 0) {
+        if (allCars.length === 0) {
           messageApi.info(`ตอนนี้ไม่มีรถว่าง`); // แสดงข้อความเมื่อไม่พบข้อมูล
         }
       } else {
         setCars([]);
+        setFilteredCars([]);
         messageApi.info("No cars available");
       }
     } catch (error) {
@@ -48,7 +49,16 @@ const CarType = () => {
     if (type) {
       getCarsByType(); // เรียก getCarsByType เมื่อ type มีค่า
     }
-  }, [type, selectedProvince]); // เรียกใหม่เมื่อ province หรือ type เปลี่ยน
+  }, [type]); // เรียกใหม่เมื่อ type เปลี่ยน
+
+  useEffect(() => {
+    // กรองข้อมูลตามจังหวัดที่เลือก
+    if (selectedProvince) {
+      setFilteredCars(cars.filter(car => car.province === selectedProvince));
+    } else {
+      setFilteredCars(cars);
+    }
+  }, [selectedProvince, cars]); // เรียกใหม่เมื่อ selectedProvince หรือ cars เปลี่ยน
 
   const handleProvinceChange = (value: string) => {
     setSelectedProvince(value); // เก็บค่าจังหวัดที่เลือก
@@ -62,7 +72,7 @@ const CarType = () => {
   return (
     <div style={{ padding: '20px' }}>
       {contextHolder}
-      <Title level={2}>{type} Cars</Title>
+      <Title level={2}>{type}</Title>
 
       {/* Select Dropdown สำหรับเลือกจังหวัด */}
       <Select
@@ -79,7 +89,7 @@ const CarType = () => {
       </Select>
 
       <Row gutter={16} className="car-cards-container">
-        {cars.map(car => (
+        {filteredCars.map(car => (
           <Col xs={24} sm={12} md={8} lg={6} key={car.ID}>
             <Card
               cover={<img src={car.picture} alt={car.license_plate} className="car-image" />}

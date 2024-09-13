@@ -1,21 +1,15 @@
 export interface CarInterface {
-  price: number;
-  license_plate: ReactNode;
-  brands: ReactNode;
-  model_year: ReactNode;
-  province: ReactNode;
-  status: ReactNode;
-  picture: string | undefined;
   ID?: number;
-  LicensePlate?: string;
-  Province?: string;
-  Brands?: string;
-  Models?: string;
-  ModelYear?: string;
-  Color?: string;
-  VIN?: string;
-  VRN?: string;
-  Status?: string;
-  Type?: string;
-  Picture?: string;
+  LicensePlate?: string; // ป้ายทะเบียน
+  Province?: string; // จังหวัด
+  Brands?: string; // แบรนด์
+  Models?: string; // รุ่น
+  ModelYear?: string; // ปีที่ผลิต
+  Color?: string; // สี
+  VIN?: string; // หมายเลขการระบุรถยนต์
+  VRN?: string; // หมายเลขทะเบียนรถ
+  Status?: string; // สถานะ
+  Type?: string; // ประเภท
+  Price?: number; // ราคา
+  Picture?: string; // รูปภาพ (แบบยาว)
 }

@@ -1,5 +1,5 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { Button, Typography, message } from "antd";
+import { Button, Typography, message, Card } from "antd";
 import { UpdateRentById, DeleteRentById } from "../../../services/https"; // Import from your service
 
 const { Title, Text } = Typography;
@@ -32,19 +32,20 @@ const PaymentPage = () => {
         }
     };
     
-
     const phoneNumber = "0844102215";
     const amount = price ? price.toFixed(2) : "0.00";
     const qrCodeUrl = `https://promptpay.io/${phoneNumber}/${amount}`;
 
     return (
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ maxWidth: '600px', width: '100%', textAlign: 'center' }}>
+        <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <Card style={{ maxWidth: '600px', width: '100%', padding: '20px' }}>
                 <Title level={3} style={{ textAlign: 'center' }}>Payment for Booking</Title>
-                <Text>Total Amount: {price ? `${price} THB` : "Price not available"}</Text><br />
                 <div style={{ textAlign: 'center', margin: '20px 0' }}>
                     <img src={qrCodeUrl} alt="PromptPay QR Code" style={{ maxWidth: '100%', height: 'auto' }} />
                 </div>
+                <Card style={{ textAlign: 'center', marginTop: '20px', padding: '10px' }}>
+                    <Text>Total Amount: {price ? `${price} THB` : "Price not available"}</Text>
+                </Card>
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <Button type="primary" onClick={handlePayment} style={{ marginRight: '10px' }}>
                         Process Payment
@@ -53,7 +54,7 @@ const PaymentPage = () => {
                         Cancel
                     </Button>
                 </div>
-            </div>
+            </Card>
         </div>
     );
 };

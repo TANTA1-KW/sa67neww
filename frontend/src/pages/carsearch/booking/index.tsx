@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { GetCarById, CreateRent } from "../../../services/https";
 import { CarInterface } from "../../../interfaces/ICar";
-import { DatePicker, Button, Typography, message } from "antd";
+import { DatePicker, Button, Typography, message, Card } from "antd";
 import { RentInterface } from "../../../interfaces/IRent";
 import dayjs from "dayjs";
 
@@ -115,24 +115,27 @@ const BookingPage = () => {
         <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             {contextHolder}
             {car ? (
-                <div style={{ maxWidth: '600px', width: '100%' }}>
+                <Card style={{ maxWidth: '600px', width: '100%' }}>
+                    <img src={car.picture} alt={car.license_plate} style={{ width: '100%', height: 'auto', marginBottom: '20px' }} />
+                    
                     <Title level={3} style={{ textAlign: 'center' }}>{car.license_plate}</Title>
                     <Text>Brand: {car.brands}</Text><br />
                     <Text>Model Year: {car.model_year}</Text><br />
                     <Text>Province: {car.province}</Text><br />
                     <Text>Status: {car.status}</Text><br />
-                    <Text>Car ID: {car.ID}</Text><br />
-                    <img src={car.picture} alt={car.license_plate} style={{ width: '100%', height: 'auto', marginBottom: '20px' }} />
 
-                    <div style={{ marginBottom: '20px' }}>
+                    <div style={{ marginBottom: '20px', marginTop: '20px' }}>
+                        <Text strong>Day First Booked:</Text>
                         <DatePicker
                             onChange={(date) => setStartDate(date ? date.toDate() : null)}
                             placeholder="Select Start Date"
-                            style={{ marginRight: '10px' }}
+                            style={{ width: '100%', marginBottom: '10px' }} // Full width with margin bottom
                         />
+                        <Text strong>Book Until:</Text>
                         <DatePicker
                             onChange={(date) => setEndDate(date ? date.toDate() : null)}
                             placeholder="Select End Date"
+                            style={{ width: '100%' }} // Full width
                         />
                     </div>
 
@@ -151,7 +154,7 @@ const BookingPage = () => {
                             Cancel
                         </Button>
                     </div>
-                </div>
+                </Card>
             ) : (
                 <Text>Loading...</Text>
             )}
