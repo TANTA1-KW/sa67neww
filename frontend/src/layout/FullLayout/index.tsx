@@ -12,6 +12,7 @@ import VehicleManage from "../../pages/vehiclemanage";
 import CarCreate from "../../pages/vehiclemanage/create";
 import CarEdit from "../../pages/vehiclemanage/edit";
 import ProfilePage from "../../pages/profile";
+import RentManager from "../../pages/rentmanage";
 
 const { Header, Content, Footer } = Layout;
 
@@ -43,6 +44,8 @@ const FullLayout: React.FC = () => {
       navigate('/rent'); // Navigate to the rent page
     } else if (e.key === "vehiclemanage") {
       navigate('/vehiclemanage'); // Navigate to the vehicle management page
+    } else if (e.key === "rentmanager") {
+      navigate('/rentmanager'); // Navigate to the rent manager page
     }
   };
 
@@ -172,6 +175,22 @@ const FullLayout: React.FC = () => {
                     <span>Vehicle Management</span>
                   </Link>
                 </Menu.Item>
+                <Menu.Item
+                  key="/rentmanager"
+                  onClick={() => setCurrentPage("rentmanager")}
+                  style={{ 
+                    borderRadius: '4px', 
+                    transition: 'background 0.3s', 
+                    background: location.pathname === "/rentmanager" ? "#1a2a40" : "transparent",
+                    color: '#FFD700'
+                  }}
+                  className="menu-item"
+                >
+                  <Link to="/rentmanager" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
+                    <UserOutlined style={{ marginRight: '8px' }} />
+                    <span>Rent Manager</span>
+                  </Link>
+                </Menu.Item>
               </Menu>
               <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
                 <Button
@@ -217,6 +236,7 @@ const FullLayout: React.FC = () => {
                 <Route path="/vehiclemanage/create" element={<CarCreate />} />
                 <Route path="/vehiclemanage/edit/:id" element={<CarEdit />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/rentmanager" element={<RentManager />} /> {/* Add this line */}
               </Routes>
             </div>
           </Content>
