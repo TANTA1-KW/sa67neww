@@ -79,7 +79,7 @@ func SetupDatabase() {
 
        LastName:  "1",
 
-	   Roles:  "admin",
+	   Roles:  0,
 
        Email:     "admin@gmail.com",
 

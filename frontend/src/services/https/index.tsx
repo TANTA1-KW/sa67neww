@@ -43,6 +43,33 @@ async function SignUp(data: SignUpInterface) {
     return fetchData(`${apiUrl}/signup`, requestOptions);
 }
 
+async function GetUsers() {
+
+    const requestOptions = {
+   
+      method: "GET",
+   
+      headers: {
+   
+        "Content-Type": "application/json",
+   
+        Authorization: `${Bearer} ${Authorization}`,
+   
+      },
+   
+    };
+   
+   
+    let res = await fetch(`${apiUrl}/users`, requestOptions).then((response) =>
+   
+      response.json()
+   
+    );
+   
+    return res;
+   
+   }
+
 async function CreateUser(data: UsersInterface) {
     const requestOptions: RequestInit = {
         method: "POST",
@@ -193,5 +220,6 @@ export {
     CreateRent,
     UpdateRentById,
     DeleteRentById,
+    GetUsers,
 
 };

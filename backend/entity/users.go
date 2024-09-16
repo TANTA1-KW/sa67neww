@@ -9,12 +9,11 @@ type Users struct {
 	gorm.Model
 	FirstName string `json:"first_name"`
 	LastName string `json:"last_name"`
-	Roles string `json:"roles"`
+	Roles uint `json:"roles"`
 	Email string `json:"email"`
 	Age uint8 `json:"age"`
 	Password string `json:"-"`
 	BirthDay time.Time `json:"birthday"`
-	
 	GenderID uint `json:"gender_id"`
 	Gender *Genders `gorm:"foreignKey: gender_id" json:"gender"`
 }

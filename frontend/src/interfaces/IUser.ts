@@ -1,4 +1,5 @@
 export interface UsersInterface {
+    roles: number;
 
     ID?: number;
    
@@ -20,4 +21,5 @@ export interface UsersInterface {
    
     Password?: string;
    
+    Roles?: number;
    }

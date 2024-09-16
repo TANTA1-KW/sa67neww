@@ -1,13 +1,7 @@
 import {
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
   Form,
   Input,
-  Checkbox,
   Button,
-  Divider,
   message,
   Typography,
   DatePicker,
@@ -31,14 +25,16 @@ const SignUpPages = () => {
   const onFinish = async (values: UsersInterface) => {
     try {
       setLoading(true);
+      values.roles = 1; 
       let res = await CreateUser(values);
-      if (res.message) {
+      console.log("API response:", res); // Debug API response
+      if (res.message === "Sign-up successful") {
         message.success("Sign-up successful");
         setTimeout(() => {
           navigate("/");
         }, 2000);
       } else {
-        message.error(res.message);
+        message.error(res.message || "An error occurred during sign-up");
       }
     } catch (error) {
       console.error("Sign-up error:", error);
@@ -233,6 +229,7 @@ const SignUpPages = () => {
                 marginTop: '16px',
                 fontFamily: 'Kanit, sans-serif',
               }}
+              loading={loading}
             >
               Sign up
             </Button>
@@ -241,9 +238,7 @@ const SignUpPages = () => {
 
         <center>
           <Text style={{ fontSize: 12, color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
-            <a onClick={() => navigate("/signin")} style={{ color: '#FFD700' }}>
-              Sign in now!
-            </a>
+            Already have an account? <a href="/">Login here</a>
           </Text>
         </center>
       </div>
