@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Button, Typography, message, Card } from "antd";
 import { UpdateRentById, DeleteRentById } from "../../../services/https"; // Import from your service
@@ -37,20 +38,52 @@ const PaymentPage = () => {
     const qrCodeUrl = `https://promptpay.io/${phoneNumber}/${amount}`;
 
     return (
-        <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <Card style={{ maxWidth: '600px', width: '100%', padding: '20px' }}>
+        <div style={{ 
+            padding: '20px', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            fontFamily: 'Kanit, sans-serif', // Apply Kanit font to the entire container
+        }}>
+            <Card style={{ 
+                maxWidth: '600px', 
+                width: '100%', 
+                padding: '20px', 
+                borderRadius: '8px', 
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                fontFamily: 'Kanit, sans-serif', // Apply Kanit font to card
+            }}>
                 <Title level={3} style={{ textAlign: 'center' }}>Payment for Booking</Title>
                 <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                    <img src={qrCodeUrl} alt="PromptPay QR Code" style={{ maxWidth: '100%', height: 'auto' }} />
+                    <img src={qrCodeUrl} alt="PromptPay QR Code" style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} />
                 </div>
-                <Card style={{ textAlign: 'center', marginTop: '20px', padding: '10px' }}>
+                <Card style={{ 
+                    textAlign: 'center', 
+                    marginTop: '20px', 
+                    padding: '10px', 
+                    borderRadius: '8px', 
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    fontFamily: 'Kanit, sans-serif' // Apply Kanit font to inner card
+                }}>
                     <Text>Total Amount: {price ? `${price} THB` : "Price not available"}</Text>
                 </Card>
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <Button type="primary" onClick={handlePayment} style={{ marginRight: '10px' }}>
+                    <Button 
+                        type="primary" 
+                        onClick={handlePayment} 
+                        style={{ 
+                            marginRight: '10px', 
+                            fontFamily: 'Kanit, sans-serif' // Apply Kanit font to button
+                        }}
+                    >
                         Process Payment
                     </Button>
-                    <Button type="default" onClick={handleCancel}>
+                    <Button 
+                        type="default" 
+                        onClick={handleCancel}
+                        style={{ fontFamily: 'Kanit, sans-serif' }} // Apply Kanit font to button
+                    >
                         Cancel
                     </Button>
                 </div>

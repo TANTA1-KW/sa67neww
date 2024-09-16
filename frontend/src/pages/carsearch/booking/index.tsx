@@ -95,7 +95,7 @@ const BookingPage = () => {
                     // Use the returned rent_id to navigate to the payment page
                     navigate(`/rent/payment/${response.rent_id}`, { state: { price: price, car: car } });
                 } else {
-                    messageApi.error("Failed to create booking. Response does not contain rent_id.");
+                    messageApi.error("วันที่คุณเลือกรถได้ถูกจองไปแล้ว");
                 }
             } catch (error) {
                 console.error('Error creating booking:', error);
@@ -112,26 +112,44 @@ const BookingPage = () => {
     };
 
     return (
-        <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ 
+            padding: '20px', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            fontFamily: 'Kanit, sans-serif', // Apply Kanit font to the entire container
+        }}>
             {contextHolder}
             {car ? (
-                <Card style={{ maxWidth: '600px', width: '100%' }}>
-                    <img src={car.picture} alt={car.license_plate} style={{ width: '100%', height: 'auto', marginBottom: '20px' }} />
+                <Card style={{ 
+                    maxWidth: '600px', 
+                    width: '100%', 
+                    borderRadius: '8px', 
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to card
+                }}>
+                    <img src={car.picture} alt={car.license_plate} style={{ 
+                        width: '100%', 
+                        height: 'auto', 
+                        borderRadius: '8px', // Rounded corners for image
+                        marginBottom: '20px' 
+                    }} />
                     
-                    <Title level={3} style={{ textAlign: 'center' }}>{car.license_plate}</Title>
-                    <Text>Brand: {car.brands}</Text><br />
-                    <Text>Model Year: {car.model_year}</Text><br />
-                    <Text>Province: {car.province}</Text><br />
-                    <Text>Status: {car.status}</Text><br />
+                    <Title level={3} style={{ textAlign: 'center', fontFamily: 'Kanit, sans-serif' }}>{car.license_plate}</Title>
+                    <Text style={{ fontFamily: 'Kanit, sans-serif' }}>Brand: {car.brands}</Text><br />
+                    <Text style={{ fontFamily: 'Kanit, sans-serif' }}>Model Year: {car.model_year}</Text><br />
+                    <Text style={{ fontFamily: 'Kanit, sans-serif' }}>Province: {car.province}</Text><br />
+                    <Text style={{ fontFamily: 'Kanit, sans-serif' }}>Status: {car.status}</Text><br />
 
                     <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-                        <Text strong>Day First Booked:</Text>
+                        <Text strong style={{ fontFamily: 'Kanit, sans-serif' }}>Day First Booked:</Text>
                         <DatePicker
                             onChange={(date) => setStartDate(date ? date.toDate() : null)}
                             placeholder="Select Start Date"
                             style={{ width: '100%', marginBottom: '10px' }} // Full width with margin bottom
                         />
-                        <Text strong>Book Until:</Text>
+                        <Text strong style={{ fontFamily: 'Kanit, sans-serif' }}>Book Until:</Text>
                         <DatePicker
                             onChange={(date) => setEndDate(date ? date.toDate() : null)}
                             placeholder="Select End Date"
@@ -143,20 +161,24 @@ const BookingPage = () => {
                         <Button
                             type="primary"
                             onClick={handleBooking}
-                            style={{ marginRight: '10px' }}
+                            style={{ 
+                                marginRight: '10px', 
+                                fontFamily: 'Kanit, sans-serif', // Apply Kanit font to button
+                            }}
                         >
                             Confirm Booking
                         </Button>
                         <Button
                             type="default"
                             onClick={handleCancel}
+                            style={{ fontFamily: 'Kanit, sans-serif' }} // Apply Kanit font to button
                         >
                             Cancel
                         </Button>
                     </div>
                 </Card>
             ) : (
-                <Text>Loading...</Text>
+                <Text style={{ fontFamily: 'Kanit, sans-serif' }}>Loading...</Text>
             )}
         </div>
     );

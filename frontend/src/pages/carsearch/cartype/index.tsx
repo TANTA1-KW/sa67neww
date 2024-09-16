@@ -12,6 +12,47 @@ const provinces = [
   // เพิ่มชื่อจังหวัดอื่น ๆ ตามต้องการ
 ];
 
+const styles = {
+  container: {
+    width: '80%',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid #003366',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to container
+  },
+  title: {
+    fontSize: '36px',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to title
+    marginBottom: '20px',
+  },
+  select: {
+    width: '100%',
+    marginBottom: '20px',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to select
+  },
+  card: {
+    cursor: 'pointer',
+    height: '100%',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to card
+  },
+  cardImage: {
+    height: '180px',
+    objectFit: 'cover',
+  },
+  cardDescription: {
+    fontSize: '14px',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to card description
+  },
+  cardMeta: {
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to card meta
+  },
+};
+
 const CarType = () => {
   const { type } = useParams<{ type: string }>(); // รับค่า type จาก URL
   const [cars, setCars] = useState<CarInterface[]>([]);
@@ -70,14 +111,14 @@ const CarType = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={styles.container}>
       {contextHolder}
-      <Title level={2}>{type}</Title>
+      <Title level={2} style={styles.title}>{type}</Title>
 
       {/* Select Dropdown สำหรับเลือกจังหวัด */}
       <Select
         placeholder="เลือกจังหวัด"
-        style={{ width: '100%', marginBottom: '20px' }}
+        style={styles.select}
         onChange={handleProvinceChange}
         allowClear
       >
@@ -88,21 +129,21 @@ const CarType = () => {
         ))}
       </Select>
 
-      <Row gutter={16} className="car-cards-container">
+      <Row gutter={16}>
         {filteredCars.map(car => (
           <Col xs={24} sm={12} md={8} lg={6} key={car.ID}>
             <Card
-              cover={<img src={car.picture} alt={car.license_plate} className="car-image" />}
+              cover={<img src={car.picture} alt={car.license_plate} style={styles.cardImage} />}
               onClick={() => handleCardClick(car)} // เมื่อคลิกที่การ์ด
-              style={{ cursor: 'pointer', height: '100%' }} // เปลี่ยนเคอร์เซอร์เมื่อ hover บนการ์ด
+              style={styles.card}
             >
               <Card.Meta
-                title={<Text>{car.license_plate}</Text>} // แสดงเลขทะเบียนรถ
+                title={<Text style={styles.cardMeta}>{car.license_plate}</Text>} // แสดงเลขทะเบียนรถ
                 description={
-                  <div className="card-description">
-                    <Text>Brand: {car.brands}</Text><br />
-                    <Text>Model Year: {car.model_year}</Text><br />
-                    <Text>Province: {car.province}</Text> {/* แสดงจังหวัด */}
+                  <div style={styles.cardDescription}>
+                    <Text style={styles.cardMeta}>Brand: {car.brands}</Text><br />
+                    <Text style={styles.cardMeta}>Model Year: {car.model_year}</Text><br />
+                    <Text style={styles.cardMeta}>Province: {car.province}</Text> {/* แสดงจังหวัด */}
                   </div>
                 }
               />

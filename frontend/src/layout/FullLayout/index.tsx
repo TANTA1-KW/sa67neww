@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { UserOutlined, DashboardOutlined, DownOutlined } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, Button, message, Dropdown } from "antd";
@@ -14,14 +14,44 @@ import CarEdit from "../../pages/vehiclemanage/edit";
 import ProfilePage from "../../pages/profile";
 import RentManager from "../../pages/rentmanage";
 
+
 const { Header, Content, Footer } = Layout;
 
 const FullLayout: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Added to get current route
+  const location = useLocation();
   const page = localStorage.getItem("page");
   const [messageApi, contextHolder] = message.useMessage();
   const [collapsed, setCollapsed] = useState(false);
+  const myId = localStorage.getItem("id");
+  const [roles, setRoles] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Fetch the user data and set roles
+    const fetchUserData = async () => {
+      try {
+        const res = await getUserById(myId);
+        if (res) {
+          setRoles(res.roles);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [myId]);
+
+  const getUserById = async (id: string) => {
+    try {
+      const res = await GetUsers();
+      const userData = res.find(user => user.ID === Number(id));
+      return userData;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
 
   const setCurrentPage = (val: string) => {
     localStorage.setItem("page", val);
@@ -31,7 +61,7 @@ const FullLayout: React.FC = () => {
     localStorage.clear();
     messageApi.success("Logout successful");
     setTimeout(() => {
-      navigate("/"); // Redirect to home page after logout
+      navigate("/");
     }, 2000);
   };
 
@@ -39,13 +69,8 @@ const FullLayout: React.FC = () => {
     if (e.key === "logout") {
       Logout();
     } else if (e.key === "profile") {
-      navigate('/profile'); // Navigate to the profile page
-    } else if (e.key === "rent") {
-      navigate('/rent'); // Navigate to the rent page
-    } else if (e.key === "vehiclemanage") {
-      navigate('/vehiclemanage'); // Navigate to the vehicle management page
-    } else if (e.key === "rentmanager") {
-      navigate('/rentmanager'); // Navigate to the rent manager page
+      setCurrentPage("profile");
+      navigate("/profile");
     }
   };
 
@@ -88,8 +113,9 @@ const FullLayout: React.FC = () => {
     </Menu>
   );
 
+
   return (
-    <Layout style={{ minHeight: "100vh", minWidth: "100vw", fontFamily: 'Kanit, sans-serif' }}>
+    <Layout style={{ minHeight: "100vh", fontFamily: 'Kanit, sans-serif', backgroundColor: '#003366' }}>
       {contextHolder}
       <Layout style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Header style={{ background: "#003366", height: "80px", padding: "0 16px", position: 'fixed', width: '100%', top: 0, zIndex: 1000 }}>
@@ -110,14 +136,14 @@ const FullLayout: React.FC = () => {
             >
               <img src={logo} alt="Logo" style={{ width: "60px", height: "auto", marginRight: "16px" }} />
             </div>
-            
+
             {/* Right Section: Menu and User Dropdown */}
             <div style={{ display: "flex", alignItems: "center" }}>
               <Menu
                 theme="dark"
                 mode="horizontal"
                 defaultSelectedKeys={[page ? page : "home"]}
-                selectedKeys={[location.pathname]} // Set selected key based on current path
+                selectedKeys={[location.pathname]}
                 style={{ 
                   background: "transparent", 
                   border: 'none', 
@@ -136,7 +162,6 @@ const FullLayout: React.FC = () => {
                     marginRight: '16px', 
                     color: '#FFD700',
                   }}
-                  className="menu-item"
                 >
                   <Link to="/" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <DashboardOutlined style={{ marginRight: '8px' }} />
@@ -152,29 +177,35 @@ const FullLayout: React.FC = () => {
                     background: location.pathname === "/rent" ? "#1a2a40" : "transparent",
                     color: '#FFD700'
                   }}
-                  className="menu-item"
                 >
                   <Link to="/rent" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <UserOutlined style={{ marginRight: '8px' }} />
                     <span>Rent</span>
                   </Link>
                 </Menu.Item>
-                <Menu.Item
-                  key="/vehiclemanage"
-                  onClick={() => setCurrentPage("vehiclemanage")}
-                  style={{ 
-                    borderRadius: '4px', 
-                    transition: 'background 0.3s', 
-                    background: location.pathname === "/vehiclemanage" ? "#1a2a40" : "transparent",
-                    color: '#FFD700'
-                  }}
-                  className="menu-item"
-                >
-                  <Link to="/vehiclemanage" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
-                    <UserOutlined style={{ marginRight: '8px' }} />
-                    <span>Vehicle Management</span>
-                  </Link>
-                </Menu.Item>
+
+                {/* Conditionally render Vehicle Management */}
+                {roles !== 1 && (
+                  <Menu.Item
+                    key="/vehiclemanage"
+                    onClick={() => setCurrentPage("vehiclemanage")}
+                    style={{ 
+                      borderRadius: '4px', 
+                      transition: 'background 0.3s', 
+                      background: location.pathname === "/vehiclemanage" ? "#1a2a40" : "transparent",
+                      color: '#FFD700'
+                    }}
+                  >
+                    <Link to="/vehiclemanage" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
+                      <UserOutlined style={{ marginRight: '8px' }} />
+                      <span>Vehicle Management</span>
+                    </Link>
+                  </Menu.Item>
+                )}
+
+                
+
+{roles !== 1 && (
                 <Menu.Item
                   key="/rentmanager"
                   onClick={() => setCurrentPage("rentmanager")}
@@ -184,14 +215,14 @@ const FullLayout: React.FC = () => {
                     background: location.pathname === "/rentmanager" ? "#1a2a40" : "transparent",
                     color: '#FFD700'
                   }}
-                  className="menu-item"
                 >
                   <Link to="/rentmanager" style={{ display: 'flex', alignItems: 'center', color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
                     <UserOutlined style={{ marginRight: '8px' }} />
                     <span>Rent Manager</span>
                   </Link>
                 </Menu.Item>
-              </Menu>
+                                )}
+                </Menu>
               <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
                 <Button
                   style={{ 
@@ -215,19 +246,19 @@ const FullLayout: React.FC = () => {
             </div>
           </div>
         </Header>
-
-        <Layout style={{ marginTop: "80px", display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <Content style={{ flex: 1, margin: "16px", overflow: 'auto' }}>
+        <Layout style={{ marginTop: "48px", display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <Content style={{ 
+            flex: 1, 
+            padding: 0,
+            margin: 0,
+            background: "#FFFFFF",
+            minHeight: 'calc(100vh - 80px - 64px)',
+            overflow: "hidden",
+          }}>
             <Breadcrumb style={{ margin: "16px 0" }} />
-            <div
-              style={{
-                padding: 50,
-                background: "#f0f2f5",
-                minHeight: 'calc(100vh - 80px - 64px)', // Adjust height to fit within viewport
-              }}
-            >
+            <div>
               <Routes>
-                <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home />} />
                 <Route path="/rent" element={<Rent />} />
                 <Route path="/rent/type/:type" element={<Type />} />
                 <Route path="/rent/booking/:carId" element={<Booking />} />

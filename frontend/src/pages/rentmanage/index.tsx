@@ -1,31 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Typography, message, Modal, Form, Input, DatePicker, Space, Select } from 'antd';
-import { GetRents, UpdateRentById, DeleteRentById } from '../../services/https';
+import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { GetRents, UpdateRentById, DeleteRentById, GetUsers, GetCars } from '../../services/https';
 import { RentInterface } from '../../interfaces/IRent';
+import { UserInterface } from '../../interfaces/IUser';
+import { CarInterface } from '../../interfaces/ICar';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
 const { Option } = Select;
 
+const styles = {
+  container: {
+    width: '80%',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid #003366',  // Blue border
+    borderRadius: '8px',          // Rounded corners
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',  // Elevated shadow
+  },
+  headerTitle: {
+    fontSize: '36px',
+    fontFamily: 'Kanit, sans-serif',
+  },
+  addButton: {
+    fontSize: '16px',
+    backgroundColor: '#003366',
+    color: '#fff',
+    border: 'none',
+    fontFamily: 'Kanit, sans-serif',
+  },
+  searchInput: {
+    fontSize: '16px',
+    width: '100%',
+    marginBottom: '16px',
+    fontFamily: 'Kanit, sans-serif',
+  },
+  filterSelect: {
+    width: '100%',
+    marginBottom: '16px',
+    fontFamily: 'Kanit, sans-serif',
+  },
+  table: {
+    marginTop: '20px',
+  },
+  editButton: {
+    backgroundColor: '#003366',
+    color: '#fff',
+    border: 'none',
+  },
+  deleteButton: {
+    backgroundColor: '#FF0000',
+    border: 'none',
+    color: '#ffffff',
+  },
+};
+
 const ManageRentPage = () => {
     const [rents, setRents] = useState<RentInterface[]>([]);
+    const [users, setUsers] = useState<UserInterface[]>([]);
+    const [cars, setCars] = useState<CarInterface[]>([]);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [currentRent, setCurrentRent] = useState<RentInterface | null>(null);
     const [form] = Form.useForm();
-    const [searchUserID, setSearchUserID] = useState<string>('');
+    const [searchName, setSearchName] = useState<string>('');
+    const [searchLicensePlateProvince, setSearchLicensePlateProvince] = useState<string>('');
     const [searchStatus, setSearchStatus] = useState<string | undefined>(undefined);
 
     useEffect(() => {
+        fetchUsers();
+        fetchCars();
         fetchRents();
-    }, [searchUserID, searchStatus]);
+    }, [searchName, searchLicensePlateProvince, searchStatus]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await GetUsers();
+            setUsers(response);
+        } catch (error) {
+            message.error('Failed to fetch user data');
+        }
+    };
+
+    const fetchCars = async () => {
+        try {
+            const response = await GetCars();
+            setCars(response);
+        } catch (error) {
+            message.error('Failed to fetch car data');
+        }
+    };
 
     const fetchRents = async () => {
         try {
             const response = await GetRents();
-            const filteredRents = response.filter(rent =>
-                (searchUserID ? rent.user_id.toString().includes(searchUserID) : true) &&
-                (searchStatus ? rent.Status === searchStatus : true)
-            );
+            const [searchFirstName, searchLastName] = searchName.split(' ');
+
+            const filteredRents = response.filter(rent => {
+                const user = users.find(u => u.ID === rent.user_id);
+                const car = cars.find(c => c.ID === rent.car_id);
+                const userFirstName = user ? user.first_name : '';
+                const userLastName = user ? user.last_name : '';
+                const carLicensePlate = car ? car.license_plate : '';
+                const carProvince = car ? car.province : '';
+                const [searchLicensePlate, searchProvince] = searchLicensePlateProvince.split(',');
+
+                return (
+                    (searchFirstName ? userFirstName.toLowerCase().includes(searchFirstName.toLowerCase()) : true) &&
+                    (searchLastName ? userLastName.toLowerCase().includes(searchLastName.toLowerCase()) : true) &&
+                    (searchLicensePlate ? carLicensePlate.toLowerCase().includes(searchLicensePlate.trim().toLowerCase()) : true) &&
+                    (searchProvince ? carProvince.toLowerCase().includes(searchProvince.trim().toLowerCase()) : true) &&
+                    (searchStatus ? rent.Status === searchStatus : true)
+                );
+            });
             setRents(filteredRents);
         } catch (error) {
             message.error('Failed to fetch rent data');
@@ -40,7 +128,7 @@ const ManageRentPage = () => {
             start_rent: dayjs(rent.start_rent),
             end_rent: dayjs(rent.end_rent),
             price: rent.price,
-            status: rent.Status, // Change "Status" to "status" for consistency
+            status: rent.Status,
         });
         setIsEditModalVisible(true);
     };
@@ -60,8 +148,8 @@ const ManageRentPage = () => {
             const updatedRent = {
                 car_id: values.carID,
                 user_id: values.userID,
-                start_rent: values.start_rent.format('YYYY-MM-DD'), // Format date to match backend
-                end_rent: values.end_rent.format('YYYY-MM-DD'), // Format date to match backend
+                start_rent: values.start_rent.format('YYYY-MM-DD'),
+                end_rent: values.end_rent.format('YYYY-MM-DD'),
                 price: values.price,
                 status: values.status,
             };
@@ -77,16 +165,28 @@ const ManageRentPage = () => {
         }
     };
 
+    const getUserName = (userID: number) => {
+        const user = users.find(u => u.ID === userID);
+        return user ? `${user.first_name} ${user.last_name}` : 'Unknown';
+    };
+
+    const getCarDetails = (carID: number) => {
+        const car = cars.find(c => c.ID === carID);
+        return car ? `${car.license_plate}, ${car.province}` : 'Unknown';
+    };
+
     const columns = [
         {
-            title: 'User ID',
+            title: 'User Name',
             dataIndex: 'user_id',
             key: 'user_id',
+            render: (userID: number) => getUserName(userID),
         },
         {
-            title: 'Car ID',
+            title: 'Car Details',
             dataIndex: 'car_id',
             key: 'car_id',
+            render: (carID: number) => getCarDetails(carID),
         },
         {
             title: 'Start Date',
@@ -107,7 +207,7 @@ const ManageRentPage = () => {
         },
         {
             title: 'Status',
-            dataIndex: 'Status', // Ensure this matches the data field
+            dataIndex: 'Status',
             key: 'status',
         },
         {
@@ -116,10 +216,19 @@ const ManageRentPage = () => {
             render: (_: any, record: RentInterface) => (
                 <div style={{ textAlign: 'right' }}>
                     <Space size="middle">
-                        <Button onClick={() => handleEdit(record)}>
+                        <Button
+                            onClick={() => handleEdit(record)}
+                            style={styles.editButton}
+                            icon={<EditOutlined />}
+                        >
                             Edit
                         </Button>
-                        <Button danger onClick={() => handleDelete(record.ID)}>
+                        <Button
+                            danger
+                            onClick={() => handleDelete(record.ID)}
+                            style={styles.deleteButton}
+                            icon={<DeleteOutlined />}
+                        >
                             Delete
                         </Button>
                     </Space>
@@ -129,30 +238,43 @@ const ManageRentPage = () => {
     ];
 
     return (
-        <div style={{ padding: '20px' }}>
-            <Title level={2}>Manage Rent Records</Title>
+        <div style={styles.container}>
+            <Title level={1} style={styles.headerTitle}>Manage Rent Records</Title>
             
             {/* Search Filters */}
             <div style={{ marginBottom: '20px' }}>
                 <Input
-                    placeholder="Search by User ID"
-                    value={searchUserID}
-                    onChange={(e) => setSearchUserID(e.target.value)}
-                    style={{ marginRight: '10px', width: '200px' }}
+                    placeholder="Search by First Name Last Name (e.g., John Doe)"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    style={styles.searchInput}
+                    suffix={<SearchOutlined />}
+                />
+                <Input
+                    placeholder="Search by License Plate, Province (e.g., ABC123, Bangkok)"
+                    value={searchLicensePlateProvince}
+                    onChange={(e) => setSearchLicensePlateProvince(e.target.value)}
+                    style={styles.searchInput}
+                    suffix={<SearchOutlined />}
                 />
                 <Select
                     placeholder="Select status"
                     value={searchStatus}
                     onChange={(value) => setSearchStatus(value)}
-                    style={{ width: '200px' }}
+                    style={styles.filterSelect}
                 >
                     <Option value="">All</Option>
                     <Option value="Pending Payment">Pending Payment</Option>
-                    <Option value="paymented">paymented</Option>
+                    <Option value="paymented">Paymented</Option>
                 </Select>
             </div>
 
-            <Table dataSource={rents} columns={columns} rowKey="id" />
+            <Table
+                dataSource={rents}
+                columns={columns}
+                rowKey="ID"
+                style={styles.table}
+            />
 
             <Modal
                 title="Edit Rent Record"
@@ -203,11 +325,11 @@ const ManageRentPage = () => {
                     >
                         <Select>
                             <Option value="Pending Payment">Pending Payment</Option>
-                            <Option value="paymented">paymented</Option>
+                            <Option value="paymented">Paymented</Option>
                         </Select>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" style={styles.addButton}>
                             Submit
                         </Button>
                     </Form.Item>

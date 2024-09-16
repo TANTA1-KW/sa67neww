@@ -1,137 +1,69 @@
-import { Col, Row, Card, Statistic, Table } from "antd";
-import { CarOutlined, CalendarOutlined, TagOutlined } from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
+import React from 'react';
+import { Carousel } from 'antd';
+import w1 from "../../assets/w1.jpg";
+import w2 from "../../assets/w2.jpg";
+import w3 from "../../assets/w3.jpg";
+import w4 from "../../assets/w4.jpg";
 
-interface DataType {
-  key: string;
-  carModel: string;
-  dailyRate: number;
-  available: boolean;
-}
+const carouselStyle: React.CSSProperties = {
+  position: 'relative', // Allows positioning the overlay relative to the carousel
+};
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "รุ่นรถ",
-    dataIndex: "carModel",
-    key: "carModel",
-  },
-  {
-    title: "อัตราค่าเช่าต่อวัน",
-    dataIndex: "dailyRate",
-    key: "dailyRate",
-    render: (text: number) => `$${text.toFixed(2)}`,
-  },
-  {
-    title: "สถานะ",
-    dataIndex: "available",
-    key: "available",
-    render: (text: boolean) => (text ? "พร้อมให้เช่า" : "ไม่พร้อมให้เช่า"),
-  },
-];
+const contentStyle: React.CSSProperties = {
+  height: '778px',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  overflow: 'hidden',  // Ensure the image stays within bounds
+};
 
-const data: DataType[] = [
-  {
-    key: '1',
-    carModel: 'Toyota Camry',
-    dailyRate: 50,
-    available: true,
-  },
-  {
-    key: '2',
-    carModel: 'Honda Civic',
-    dailyRate: 45,
-    available: false,
-  },
-  {
-    key: '3',
-    carModel: 'Ford Focus',
-    dailyRate: 55,
-    available: true,
-  },
-  {
-    key: '4',
-    carModel: 'Chevrolet Malibu',
-    dailyRate: 60,
-    available: true,
-  },
-];
+const logoStyle: React.CSSProperties = {
+  width: '100%',       // Take up full width of the container
+  height: '100%',      // Take up full height of the container
+  objectFit: 'cover',  // Ensures the image covers the container while maintaining aspect ratio
+};
 
-export default function HomePage() {
-  return (
-    <>
-      <Row gutter={[16, 16]} justify="center" style={{ padding: '20px' }}>
-        <Col span={24} style={{ textAlign: 'center' }}>
-          <h1 style={{ marginBottom: '20px' }}>Welcome to TWN Rent Car</h1>
-          <p>Find the perfect car for your next adventure</p>
-        </Col>
+const overlayStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  color: '#fff',
+  fontSize: '48px',
+  fontWeight: 'bold',
+  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)',
+  zIndex: 1, // Ensure it appears on top of the image
+  textAlign: 'center', // Center text
+  width: '100%', // Full width of the viewport
+};
 
-        <Col xs={24} sm={24} md={24} lg={24} xl={18}>
-          <Card bordered={false} style={{ backgroundColor: "#F5F5F5", marginBottom: '20px' }}>
-            <Row gutter={[16, 16]} justify="center">
-              <Col xs={24} sm={12} md={8}>
-                <Card
-                  bordered={false}
-                  style={{
-                    textAlign: 'center',
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                    marginBottom: '16px',
-                  }}
-                >
-                  <Statistic
-                    title="รถยนต์ทั้งหมด"
-                    value={250}
-                    prefix={<CarOutlined />}
-                  />
-                </Card>
-              </Col>
+const App: React.FC = () => (
+  <div style={{ position: 'relative', height: '778px' }}>
+     <Carousel autoplay autoplaySpeed={2000} style={carouselStyle}>
+      <div>
+        <div style={contentStyle}>
+          <img src={w1} alt="Wallpaper Slide 1" style={logoStyle} />
+        </div>
+      </div>
+      <div>
+        <div style={contentStyle}>
+          <img src={w2} alt="Wallpaper Slide 2" style={logoStyle} />
+        </div>
+      </div>
+      <div>
+        <div style={contentStyle}>
+          <img src={w3} alt="Wallpaper Slide 3" style={logoStyle} />
+        </div>
+      </div>
+      <div>
+        <div style={contentStyle}>
+          <img src={w4} alt="Wallpaper Slide 4" style={logoStyle} />
+        </div>
+      </div>
+    </Carousel>
+    <div style={overlayStyle}>TWN Rent Car</div>
+  </div>
+);
 
-              <Col xs={24} sm={12} md={8}>
-                <Card
-                  bordered={false}
-                  style={{
-                    textAlign: 'center',
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                    marginBottom: '16px',
-                  }}
-                >
-                  <Statistic
-                    title="โปรโมชันปัจจุบัน"
-                    value={5}
-                    prefix={<TagOutlined />}
-                  />
-                </Card>
-              </Col>
-
-              <Col xs={24} sm={12} md={8}>
-                <Card
-                  bordered={false}
-                  style={{
-                    textAlign: 'center',
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                    marginBottom: '16px',
-                  }}
-                >
-                  <Statistic
-                    title="การจองวันนี้"
-                    value={15}
-                    prefix={<CalendarOutlined />}
-                  />
-                </Card>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={24} md={24} lg={24} xl={18}>
-          <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>รถยนต์ที่พร้อมให้เช่า</h3>
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{ pageSize: 5 }}
-            style={{ margin: '0 auto' }}
-          />
-        </Col>
-      </Row>
-    </>
-  );
-}
+export default App;
