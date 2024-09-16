@@ -7,7 +7,21 @@ import { CarInterface } from "../../interfaces/ICar";
 const { Title } = Typography;
 
 const styles = {
-  fontFamily: 'Kanit, sans-serif',
+  container: {
+    width: '80%',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid #003366',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to container
+  },
+  title: {
+    fontSize: '36px',
+    marginBottom: '20px',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to title
+  },
   button: {
     width: '100%',
     height: '300px',
@@ -20,7 +34,10 @@ const styles = {
     margin: '10px',
     border: 'none',
     cursor: 'pointer',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: adds a dark overlay
+    backgroundColor: '#003366',
+    color: '#fff',
+    fontSize: '16px',
+    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to button
   },
   imageWrapper: {
     position: 'absolute',
@@ -30,7 +47,7 @@ const styles = {
     height: '100%',
     display: 'flex',
     transition: 'transform 1s ease-in-out',
-    willChange: 'transform', // Helps with smoother transitions
+    willChange: 'transform',
   },
   image: {
     width: '100%',
@@ -101,7 +118,6 @@ function CarSearch() {
           }));
         }, 3000);
 
-        // Clear existing interval before setting a new one
         if (intervals[type]) {
           clearInterval(intervals[type] as NodeJS.Timeout);
         }
@@ -114,7 +130,6 @@ function CarSearch() {
     });
 
     return () => {
-      // Clean up all intervals on unmount
       Object.values(intervals).forEach(interval => {
         if (interval) {
           clearInterval(interval);
@@ -128,8 +143,8 @@ function CarSearch() {
   };
 
   return (
-    <div style={{ fontFamily: styles.fontFamily, padding: '20px' }}>
-      <Title level={1}>Type Car</Title>
+    <div style={styles.container}>
+      <Title level={1} style={styles.title}>Type Car</Title>
       <Row gutter={16} style={{ marginBottom: '20px' }}>
         {['Eco car', 'Van', 'Motorcycle'].map(type => (
           <Col xs={24} sm={12} md={8} lg={8} xl={8} style={{ textAlign: 'center' }} key={type}>
