@@ -13,7 +13,10 @@ import CarCreate from "../../pages/vehiclemanage/create";
 import CarEdit from "../../pages/vehiclemanage/edit";
 import ProfilePage from "../../pages/profile";
 import RentManager from "../../pages/rentmanage";
-
+import EmployeePage from "../../pages/employee";
+import CreateEmployee from"../../pages/employee/create";
+import EditEmployee from"../../pages/employee/edit";
+import { GetUsers } from "../../services/https";
 
 const { Header, Content, Footer } = Layout;
 
@@ -53,6 +56,7 @@ const FullLayout: React.FC = () => {
     }
   };
 
+
   const setCurrentPage = (val: string) => {
     localStorage.setItem("page", val);
   };
@@ -71,6 +75,9 @@ const FullLayout: React.FC = () => {
     } else if (e.key === "profile") {
       setCurrentPage("profile");
       navigate("/profile");
+    } else if (e.key === "employee") {
+      setCurrentPage("employee");
+      navigate("/employee");
     }
   };
 
@@ -97,6 +104,21 @@ const FullLayout: React.FC = () => {
         <UserOutlined style={{ marginRight: '8px', color: '#FFD700' }} />
         Profile
       </Menu.Item>
+      {roles !== 1 && (
+      <Menu.Item
+        key="employee"
+        style={{ 
+          fontFamily: 'Kanit, sans-serif',
+          color: '#FFD700',
+          transition: 'background 0.3s',
+          backgroundColor: 'transparent',
+          borderRadius: '4px',
+        }}
+      >
+        <UserOutlined style={{ marginRight: '8px', color: '#FFD700' }} />
+        Employee
+      </Menu.Item>
+      )}
       <Menu.Item
         key="logout"
         style={{ 
@@ -168,6 +190,7 @@ const FullLayout: React.FC = () => {
                     <span>Home</span>
                   </Link>
                 </Menu.Item>
+                
                 <Menu.Item
                   key="/rent"
                   onClick={() => setCurrentPage("rent")}
@@ -205,7 +228,7 @@ const FullLayout: React.FC = () => {
 
                 
 
-{roles !== 1 && (
+              {roles !== 1 && (
                 <Menu.Item
                   key="/rentmanager"
                   onClick={() => setCurrentPage("rentmanager")}
@@ -267,6 +290,9 @@ const FullLayout: React.FC = () => {
                 <Route path="/vehiclemanage/create" element={<CarCreate />} />
                 <Route path="/vehiclemanage/edit/:id" element={<CarEdit />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/employee" element={<EmployeePage />} />
+                <Route path="/employee/edit/:id" element={<EditEmployee />} />
+                <Route path="/employee/create" element={<CreateEmployee />} />
                 <Route path="/rentmanager" element={<RentManager />} /> {/* Add this line */}
               </Routes>
             </div>

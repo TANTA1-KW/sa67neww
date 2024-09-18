@@ -1,5 +1,5 @@
 export interface UsersInterface {
-    roles: number;
+    //roles: number;
 
     ID?: number;
    

@@ -22,10 +22,27 @@ const SignUpPages = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return 0;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   const onFinish = async (values: UsersInterface) => {
     try {
       setLoading(true);
-      values.roles = 1; 
+      
+      // Calculate age based on the date of birth
+      const age = calculateAge(values.birthday ? values.birthday.toDate() : null);
+      values.age = age; // Set age field in values
+      values.roles = 1; // Set default role
+
       let res = await CreateUser(values);
       console.log("API response:", res); // Debug API response
       if (res.message === "Sign-up successful") {
@@ -145,7 +162,7 @@ const SignUpPages = () => {
             </Col>
           </Row>
           <Row gutter={[16, 16]}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
                 label={<span style={{ fontSize: '16px', color: 'white', fontFamily: 'Kanit, sans-serif' }}>Password</span>}
                 name="password"
@@ -158,29 +175,16 @@ const SignUpPages = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            
+          </Row>
+          <Row gutter={[16, 16]}>
+          <Col span={12}>
               <Form.Item
                 label={<span style={{ fontSize: '16px', color: 'white', fontFamily: 'Kanit, sans-serif' }}>Date of Birth</span>}
                 name="birthday"
                 rules={[{ required: true, message: 'Please select your date of birth!' }]}
               >
                 <DatePicker
-                  style={{ width: '100%', borderRadius: '4px', backgroundColor: 'white', color: 'black', fontFamily: 'Kanit, sans-serif' }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Form.Item
-                label={<span style={{ fontSize: '16px', color: 'white', fontFamily: 'Kanit, sans-serif' }}>Age</span>}
-                name="age"
-                rules={[{ required: true, message: 'Please input your age!' }]}
-              >
-                <InputNumber
-                  min={0}
-                  max={99}
-                  defaultValue={0}
                   style={{ width: '100%', borderRadius: '4px', backgroundColor: 'white', color: 'black', fontFamily: 'Kanit, sans-serif' }}
                 />
               </Form.Item>
@@ -221,26 +225,20 @@ const SignUpPages = () => {
             <Button
               type="primary"
               htmlType="submit"
+              loading={loading}
               style={{
                 width: '100%',
-                height: '40px',
-                fontSize: '16px',
-                borderRadius: '8px',
-                marginTop: '16px',
+                borderRadius: '4px',
+                backgroundColor: '#1890ff',
+                borderColor: '#1890ff',
+                color: 'white',
                 fontFamily: 'Kanit, sans-serif',
               }}
-              loading={loading}
             >
-              Sign up
+              Sign Up
             </Button>
           </Form.Item>
         </Form>
-
-        <center>
-          <Text style={{ fontSize: 12, color: '#FFD700', fontFamily: 'Kanit, sans-serif' }}>
-            Already have an account? <a href="/">Login here</a>
-          </Text>
-        </center>
       </div>
     </div>
   );

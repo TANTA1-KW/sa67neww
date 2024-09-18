@@ -16,6 +16,10 @@ const Booking = Loadable(lazy(() => import('../pages/carsearch/booking')));
 const Payment = Loadable(lazy(() => import('../pages/carsearch/payment')));
 const ManageRentPage = Loadable(lazy(() => import('../pages/rentmanage'))); // Ensure this is correctly loaded
 
+const EmployeePage = Loadable(lazy(() => import("../pages/employee")));
+const CreateEmployee = Loadable(lazy(() => import("../pages/employee/create")));
+const EditEmployee = Loadable(lazy(() => import("../pages/employee/edit")));
+
 const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
   return {
     path: '/',
@@ -45,6 +49,23 @@ const AdminRoutes = (isLoggedIn: boolean): RouteObject => {
       {
         path: '/profile',
         element: <ProfilePage />,
+      },
+      {
+        path: '/employee', // Base route for employee-related views
+        children: [
+          {
+            path: '', // Default child route
+            element: <EmployeePage />,
+          },
+          {
+            path: "create",
+            element: <CreateEmployee />,
+          },
+          {
+            path: "edit/:id", // Dynamic route for editing specific employee
+            element: <EditEmployee />,
+          },
+        ],
       },
       {
         path: '/rent',

@@ -11,6 +11,8 @@ import (
     "github.com/gtwndtl/projectsa/controller/genders"
     "github.com/gtwndtl/projectsa/controller/users"
     "github.com/gtwndtl/projectsa/middlewares"
+
+    "github.com/gtwndtl/projectsa/controller/Leave"
 )
 
 const defaultPort = "8000"
@@ -59,6 +61,11 @@ func main() {
         router.DELETE("/rent/:id", rent.Delete)
     }
 
+    r.POST("/leave-request", Leave.AddLeaveRequest)
+    r.GET("/leave-requests", Leave.GetAllLeaveRequests)
+    r.GET("/leave-request/:id", Leave.GetLeaveRequest)
+    r.PUT("/leave-request/:id", Leave.UpdateLeaveRequest)
+    r.DELETE("/leave-request/:id", Leave.DeleteLeaveRequest)
     // Gender route
     r.GET("/genders", genders.GetAll)
 

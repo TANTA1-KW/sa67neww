@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GetCars } from "../../services/https";
 import { CarInterface } from "../../interfaces/ICar";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const styles = {
   container: {
@@ -15,12 +15,12 @@ const styles = {
     border: '2px solid #003366',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to container
+    fontFamily: 'Kanit, sans-serif',
   },
   title: {
     fontSize: '36px',
     marginBottom: '20px',
-    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to title
+    fontFamily: 'Kanit, sans-serif',
   },
   button: {
     width: '100%',
@@ -37,7 +37,7 @@ const styles = {
     backgroundColor: '#003366',
     color: '#fff',
     fontSize: '16px',
-    fontFamily: 'Kanit, sans-serif', // Apply Kanit font to button
+    fontFamily: 'Kanit, sans-serif',
   },
   imageWrapper: {
     position: 'absolute',
@@ -53,6 +53,11 @@ const styles = {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
+  },
+  text: {
+    marginTop: '10px',
+    fontSize: '18px',
+    fontFamily: 'Kanit, sans-serif',
   },
 };
 
@@ -144,7 +149,7 @@ function CarSearch() {
 
   return (
     <div style={styles.container}>
-      <Title level={1} style={styles.title}>Type Car</Title>
+      <Title level={1} style={styles.title}>กรุณาเลือกประเภทรถ</Title>
       <Row gutter={16} style={{ marginBottom: '20px' }}>
         {['Eco car', 'Van', 'Motorcycle'].map(type => (
           <Col xs={24} sm={12} md={8} lg={8} xl={8} style={{ textAlign: 'center' }} key={type}>
@@ -174,6 +179,7 @@ function CarSearch() {
                 ))}
               </div>
             </Button>
+            <Text style={styles.text}>{type}</Text>
           </Col>
         ))}
       </Row>
